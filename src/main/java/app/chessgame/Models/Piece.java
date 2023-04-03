@@ -7,9 +7,11 @@ import java.util.List;
 public abstract class Piece {
     private Color color;
     private boolean inGame;
+    private final MoveStrategy moveStrategy;
 
-    public Piece(){
+    public Piece(MoveStrategy strategy){
         this.inGame = false;
+        this.moveStrategy = strategy;
     }
 
     /**
@@ -24,13 +26,14 @@ public abstract class Piece {
         this.inGame = value;
     }
 
-
     /**
      * Checks for all the possible moves this piece can do
      * @param currentCell
      * @return a list of the possible cells to which this current piece can move to
      */
-    public abstract List<Cell> possibleMoves(Cell currentCell);
+    public List<Cell> possibleMoves(Cell currentCell){
+        return this.moveStrategy.getPossibleMoves(currentCell);
+    }
 
     /**
      * moves this piece to the Cell passed in param
