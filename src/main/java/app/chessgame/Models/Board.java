@@ -1,4 +1,4 @@
-package models;
+package app.chessgame.Models;
 
 import javafx.scene.paint.Color;
 
