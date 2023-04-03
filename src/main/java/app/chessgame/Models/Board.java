@@ -6,8 +6,10 @@ public class Board {
     Cell [][] cells;
     int rows = 8; // nombre de lignes
     int cols = 8; // nombre de colonnes
-     public Board(){
 
+    private static Board instance;
+
+     private Board(){
          //Création du tableau
          this.cells = new Cell[rows][cols];
 
@@ -24,6 +26,16 @@ public class Board {
 
      }
 
+    /**
+     * Get a singletone instance of the board class
+     * @return a singletone instance of the board class
+     */
+     public static Board getInstance(){
+         if (instance == null)
+             instance = new Board();
+
+         return instance;
+     }
 
     public void printBoard() {
         // Afficher la table d'échecs
