@@ -17,9 +17,9 @@ public class Board {
          for (int i = 0; i < rows; i++) {
              for (int j = 0; j < cols; j++) {
                  if ((i+j) % 2 == 0) {
-                     cells[i][j] = new Cell(Color.WHITE); // case blanche
+                     cells[i][j] = new Cell(Color.WHITE, new Point(i, j)); // case blanche
                  } else {
-                     cells[i][j] = new Cell (Color.BLACK); // case noire
+                     cells[i][j] = new Cell (Color.BLACK, new Point(i, j)); // case noire
                  }
              }
          }

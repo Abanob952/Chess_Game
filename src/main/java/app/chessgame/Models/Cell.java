@@ -2,12 +2,14 @@ package app.chessgame.Models;
 import javafx.scene.paint.Color;
 
 public class Cell {
+    private Point point;
     Color color;
     Piece piece = null;
 
     //Constructeur
-    public Cell(Color color){
+    public Cell(Color color, Point point){
         this.color = color;
+        this.point = point;
     }
 
     //Setter et Getter
@@ -32,8 +34,7 @@ public class Cell {
     }
 
 
-
-
-
-
+    public Point getPoint(){
+        return this.point;
+    }
 }
