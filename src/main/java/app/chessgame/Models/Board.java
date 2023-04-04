@@ -55,6 +55,10 @@ public class Board {
         return cells[row][col].getColor() == Color.WHITE ? "W" : "B";
     }
 
+    public Cell getCell(Point point) throws IndexOutOfBoundsException{
+        return this.cells[point.getX()][point.getY()];
+    }
+
     public static void main(String[] args) {
         Board board = new Board(); // créer une instance de la classe Board
         board.printBoard(); // afficher la table d'échecs
