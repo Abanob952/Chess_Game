@@ -1,4 +1,4 @@
-package models;
+package app.chessgame.Models;
 
 import javafx.scene.paint.Color;
 
@@ -6,8 +6,10 @@ public class Board {
     Cell [][] cells;
     int rows = 8; // nombre de lignes
     int cols = 8; // nombre de colonnes
-     public Board(){
 
+    private static Board instance;
+
+     private Board(){
          //Création du tableau
          this.cells = new Cell[rows][cols];
 
@@ -15,15 +17,25 @@ public class Board {
          for (int i = 0; i < rows; i++) {
              for (int j = 0; j < cols; j++) {
                  if ((i+j) % 2 == 0) {
-                     cells[i][j] = new Cell(Color.WHITE); // case blanche
+                     cells[i][j] = new Cell(Color.WHITE, new Point(i, j)); // case blanche
                  } else {
-                     cells[i][j] = new Cell (Color.BLACK); // case noire
+                     cells[i][j] = new Cell (Color.BLACK, new Point(i, j)); // case noire
                  }
              }
          }
 
      }
 
+    /**
+     * Get a singletone instance of the board class
+     * @return a singletone instance of the board class
+     */
+     public static Board getInstance(){
+         if (instance == null)
+             instance = new Board();
+
+         return instance;
+     }
 
     public void printBoard() {
         // Afficher la table d'échecs
@@ -41,6 +53,10 @@ public class Board {
     public String getCellColor(int row, int col) {
         // renvoie la couleur de la cellule à la position donnée sous forme de chaîne de caractères "W" ou "B"
         return cells[row][col].getColor() == Color.WHITE ? "W" : "B";
+    }
+
+    public Cell getCell(Point point) throws IndexOutOfBoundsException{
+        return this.cells[point.getX()][point.getY()];
     }
 
     public static void main(String[] args) {

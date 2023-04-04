@@ -1,24 +1,26 @@
-package models;
+package app.chessgame.Models;
 import javafx.scene.paint.Color;
 
 public class Cell {
+    private Point point;
     Color color;
-    //Piece piece = null;
+    Piece piece = null;
 
     //Constructeur
-    public Cell(Color color){
+    public Cell(Color color, Point point){
         this.color = color;
+        this.point = point;
     }
 
     //Setter et Getter
-
     public Color getColor(){
         return this.color;
     }
 
-    /* Commenter car la classe Piece n'a pas encore été créé
-
     public void setPiece(Piece piece){
+        if(this.piece != null){
+            this.piece.setInGame(false);
+        }
 
         this.piece = piece;
     }
@@ -30,10 +32,9 @@ public class Cell {
      public boolean isEmpty(){
         return (this.piece == null);
     }
-    */
 
 
-
-
-
+    public Point getPoint(){
+        return this.point;
+    }
 }
