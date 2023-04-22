@@ -16,16 +16,16 @@ ext {
     junitVersion = '5.8.2'
 }
 
-sourceCompatibility = '18'
-targetCompatibility = '18'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
 application {
-    mainModule = 'com.example.chessgame'
-    mainClass = 'com.example.chessgame.HelloApplication'
+    mainModule = 'app.chessgame'
+    mainClass = 'app.chessgame.HelloApplication'
 }
 
 javafx {
