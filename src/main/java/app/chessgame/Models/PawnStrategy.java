@@ -21,16 +21,12 @@ public class PawnStrategy implements MoveStrategy{
         List<Cell> possibleMoves = new ArrayList<>();
         Map<Color, List<Point>> moves = this.calculateMoves(currentCell.getPoint());
         for(Point potentialPoint: moves.get(this.color)){
-            if (this.validPoint(potentialPoint)){
+            if (Utility.validPoint(potentialPoint)){
                 possibleMoves.add(Board.getInstance().getCell(potentialPoint));
             }
         }
 
         return possibleMoves;
-    }
-
-    private boolean validPoint(Point point){
-        return point.getX() < 8 && point.getX() >= 0 && point.getY() < 8 && point.getY() >= 0;
     }
 
     /**
