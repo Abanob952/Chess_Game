@@ -4,6 +4,14 @@ import javafx.scene.paint.Color;
 import jdk.jshell.spi.ExecutionControl;
 
 public class PieceFactory {
+
+    /**
+     * Factory method, creates a piece corresponding the enum and the color passed
+     * @param piece enum corresponding to the piece
+     * @param color color of the piece either black or white
+     * @return a piece corresponding the enum and the color passed
+     * @throws ExecutionControl.NotImplementedException if enum passed does not correspond to any piece
+     */
     public Piece createPiece(PieceEnum piece, Color color) throws ExecutionControl.NotImplementedException {
         switch (piece){
             case PAWN -> {
