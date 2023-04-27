@@ -1,9 +1,8 @@
-package app.chessgame.Models;
+package app.chessgame.Models.ChessPieces;
 
+import app.chessgame.Models.*;
 import javafx.scene.paint.Color;
 import jdk.jshell.spi.ExecutionControl;
-
-import static app.chessgame.Models.PieceEnum.ROOK;
 
 public class PieceFactory {
 

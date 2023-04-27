@@ -1,6 +1,13 @@
 package app.chessgame.Models;
 
+import app.chessgame.Models.ChessPieces.PieceEnum;
+import app.chessgame.Models.ChessPieces.PieceFactory;
 import javafx.scene.paint.Color;
+import jdk.jshell.spi.ExecutionControl;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Scanner;
 
 public class Board {
     Cell [][] cells;
@@ -26,13 +33,48 @@ public class Board {
 
      }
 
+     public Board(PieceFactory factory) throws ExecutionControl.NotImplementedException {
+         this.cells = new Cell[rows][cols];
+
+         for (int i = 0; i < rows; i++) {
+             for (int j = 0; j < cols; j++) {
+                 Color color;
+                 if ((i+j) % 2 == 0) {
+                     color = Color.WHITE;
+                     cells[i][j] = new Cell(color, new Point(i, j)); // case blanche
+                 } else {
+                     color = Color.BLACK;
+                     cells[i][j] = new Cell (color, new Point(i, j)); // case noire
+                 }
+
+                 if(i == 1 || i == 6){
+                     cells[i][j].setPiece(factory.createPiece(PieceEnum.PAWN, color));
+                 } else if ((i == 0 || i == 7) ) {
+                     switch (j) {
+                         case 0, 7 -> cells[i][j].setPiece(factory.createPiece(PieceEnum.ROOK, color));
+                         case 1, 6 -> cells[i][j].setPiece(factory.createPiece(PieceEnum.KNIGHT, color));
+                         case 2, 5 -> cells[i][j].setPiece(factory.createPiece(PieceEnum.BISHOP, color));
+                         case 3 -> cells[i][j].setPiece(factory.createPiece(PieceEnum.QUEEN, color));
+                         case 4 -> cells[i][j].setPiece(factory.createPiece(PieceEnum.KING, color));
+                     }
+                 }
+             }
+         }
+     }
+
     /**
      * Get a singletone instance of the board class
      * @return a singletone instance of the board class
      */
-     public static Board getInstance(){
-         if (instance == null)
+     public static Board getInstance() {
+         try{
+             if (instance == null)
+                 instance = new Board(new PieceFactory());
+         }
+         catch (ExecutionControl.NotImplementedException e){
              instance = new Board();
+         }
+
 
          return instance;
      }
@@ -43,25 +85,42 @@ public class Board {
         for (int i = 0; i < rows; i++) {
             System.out.print((8 - i) + " "); // afficher les numéros des rangées
             for (int j = 0; j < cols; j++) {
-                System.out.print(getCellColor(i, j) + " "); // afficher la couleur de la cellule
+                System.out.print(cells[i][j].toString() + " "); // afficher la couleur de la cellule
             }
             System.out.print((8 - i) + " "); // afficher les numéros des rangées à nouveau
             System.out.println(); // sauter une ligne après chaque rangée
         }
         System.out.println("  a b c d e f g h"); // afficher les lettres des colonnes à nouveau
     }
-    public String getCellColor(int row, int col) {
-        // renvoie la couleur de la cellule à la position donnée sous forme de chaîne de caractères "W" ou "B"
-        return cells[row][col].getColor() == Color.WHITE ? "W" : "B";
-    }
 
     public Cell getCell(Point point) throws IndexOutOfBoundsException{
         return this.cells[point.getX()][point.getY()];
     }
 
-    public static void main(String[] args) {
-        Board board = new Board(); // créer une instance de la classe Board
-        board.printBoard(); // afficher la table d'échecs
+    /**
+     * Marks all the cells passed
+     * @param cells to be highlited
+     */
+    public void highlightCells(List<Cell> cells){
+        for (Cell cell: cells
+             ) {
+            cell.setHighlited(true);
+        }
+        printBoard();
+    }
+
+    public static void main(String[] args) throws ExecutionControl.NotImplementedException, IOException {
+        Board board = Board.getInstance(); // créer une instance de la classe Board
+        Scanner scanner = new Scanner(System.in);
+        while (true){
+            System.out.println("Input row:");
+            int row = scanner.nextInt();
+            System.out.println("Input Col:");
+            int col = scanner.nextInt();
+            Cell cell = board.getCell(new Point(row, col));
+            List<Cell> cells = cell.getPiece().possibleMoves(cell);
+            board.highlightCells(cells);
+        }
     }
 }
 

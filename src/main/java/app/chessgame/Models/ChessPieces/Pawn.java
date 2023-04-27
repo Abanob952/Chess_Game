@@ -1,5 +1,7 @@
-package app.chessgame.Models;
+package app.chessgame.Models.ChessPieces;
 
+import app.chessgame.Models.Cell;
+import app.chessgame.Models.MoveStrategy;
 import javafx.scene.paint.Color;
 
 public class Pawn extends Piece{
@@ -26,5 +28,11 @@ public class Pawn extends Piece{
      */
     public boolean isMoved(){
         return this.moved;
+    }
+    @Override
+    public String toString() {
+        if(this.getColor() == Color.WHITE)
+            return "P";
+        return "P";
     }
 }

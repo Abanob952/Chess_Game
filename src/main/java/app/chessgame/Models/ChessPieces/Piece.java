@@ -1,5 +1,7 @@
-package app.chessgame.Models;
+package app.chessgame.Models.ChessPieces;
 
+import app.chessgame.Models.Cell;
+import app.chessgame.Models.MoveStrategy;
 import javafx.scene.paint.Color;
 
 import java.util.List;
