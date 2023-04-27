@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 
-public abstract class Piece {
+public class Piece {
     private Color color;
     private boolean inGame;
     private final MoveStrategy moveStrategy;
@@ -14,6 +14,11 @@ public abstract class Piece {
         this.moveStrategy = strategy;
     }
 
+    public Piece(MoveStrategy strategy, Color color){
+        this.inGame = false;
+        this.moveStrategy = strategy;
+        this.color = color;
+    }
     /**
      * Used to check if this piece was eaten or not
      * @return true if this piece wasn't eaten yet and false otherwise
