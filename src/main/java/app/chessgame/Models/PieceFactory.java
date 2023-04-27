@@ -3,6 +3,8 @@ package app.chessgame.Models;
 import javafx.scene.paint.Color;
 import jdk.jshell.spi.ExecutionControl;
 
+import static app.chessgame.Models.PieceEnum.ROOK;
+
 public class PieceFactory {
 
     /**
@@ -25,6 +27,12 @@ public class PieceFactory {
             }
             case QUEEN -> {
                 return new Queen(new QueenStrategy(color), color);
+            }
+            case ROOK -> {
+                return new Rook(new RookStrategy(color), color);
+            }
+            case BISHOP -> {
+                return new Bishop(new BishopStrategy(color), color);
             }
             default -> throw new ExecutionControl.NotImplementedException("Piece " + piece + "does not exist");
         }
