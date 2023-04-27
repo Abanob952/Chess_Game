@@ -38,18 +38,17 @@ public class Board {
 
          for (int i = 0; i < rows; i++) {
              for (int j = 0; j < cols; j++) {
-                 Color color;
                  if ((i+j) % 2 == 0) {
-                     color = Color.WHITE;
-                     cells[i][j] = new Cell(color, new Point(i, j)); // case blanche
+                     cells[i][j] = new Cell( Color.WHITE, new Point(i, j)); // case blanche
                  } else {
-                     color = Color.BLACK;
-                     cells[i][j] = new Cell (color, new Point(i, j)); // case noire
+                     cells[i][j] = new Cell (Color.BLACK, new Point(i, j)); // case noire
                  }
 
                  if(i == 1 || i == 6){
+                     Color color = i ==1?Color.BLACK:Color.WHITE;
                      cells[i][j].setPiece(factory.createPiece(PieceEnum.PAWN, color));
                  } else if ((i == 0 || i == 7) ) {
+                     Color color = i ==7?Color.BLACK:Color.WHITE;
                      switch (j) {
                          case 0, 7 -> cells[i][j].setPiece(factory.createPiece(PieceEnum.ROOK, color));
                          case 1, 6 -> cells[i][j].setPiece(factory.createPiece(PieceEnum.KNIGHT, color));
