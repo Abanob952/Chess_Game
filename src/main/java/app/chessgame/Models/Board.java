@@ -3,7 +3,6 @@ package app.chessgame.Models;
 import app.chessgame.Models.ChessPieces.PieceEnum;
 import app.chessgame.Models.ChessPieces.PieceFactory;
 import javafx.scene.paint.Color;
-import jdk.jshell.spi.ExecutionControl;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,7 +32,7 @@ public class Board {
 
      }
 
-     public Board(PieceFactory factory) throws ExecutionControl.NotImplementedException {
+     public Board(PieceFactory factory) {
          this.cells = new Cell[rows][cols];
 
          for (int i = 0; i < rows; i++) {
@@ -70,7 +69,7 @@ public class Board {
              if (instance == null)
                  instance = new Board(new PieceFactory());
          }
-         catch (ExecutionControl.NotImplementedException e){
+         catch (Exception e){
              instance = new Board();
          }
 
@@ -96,6 +95,10 @@ public class Board {
         return this.cells[point.getX()][point.getY()];
     }
 
+    public Cell getCell(int x, int y) throws IndexOutOfBoundsException{
+        return this.cells[x][y];
+    }
+
     /**
      * Marks all the cells passed
      * @param cells to be highlited
@@ -108,7 +111,7 @@ public class Board {
         printBoard();
     }
 
-    public static void main(String[] args) throws ExecutionControl.NotImplementedException, IOException {
+    public static void main(String[] args) {
         Board board = Board.getInstance(); // créer une instance de la classe Board
         Scanner scanner = new Scanner(System.in);
         while (true){
