@@ -2,7 +2,6 @@ package app.chessgame.Models.ChessPieces;
 
 import app.chessgame.Models.*;
 import javafx.scene.paint.Color;
-import jdk.jshell.spi.ExecutionControl;
 
 public class PieceFactory {
 
@@ -11,9 +10,9 @@ public class PieceFactory {
      * @param piece enum corresponding to the piece
      * @param color color of the piece either black or white
      * @return a piece corresponding the enum and the color passed
-     * @throws ExecutionControl.NotImplementedException if enum passed does not correspond to any piece
+     * @throws if enum passed does not correspond to any piece
      */
-    public Piece createPiece(PieceEnum piece, Color color) throws ExecutionControl.NotImplementedException {
+    public Piece createPiece(PieceEnum piece, Color color) {
         switch (piece){
             case PAWN -> {
                 return new Pawn(new PawnStrategy(color), color);
@@ -33,7 +32,7 @@ public class PieceFactory {
             case BISHOP -> {
                 return new Bishop(new BishopStrategy(color), color);
             }
-            default -> throw new ExecutionControl.NotImplementedException("Piece " + piece + "does not exist");
+            default -> throw new RuntimeException("Piece " + piece + "does not exist");
         }
     }
 }
