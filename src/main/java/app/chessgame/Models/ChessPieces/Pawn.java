@@ -2,6 +2,7 @@ package app.chessgame.Models.ChessPieces;
 
 import app.chessgame.Models.Cell;
 import app.chessgame.Models.MoveStrategy;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class Pawn extends Piece{
@@ -13,6 +14,11 @@ public class Pawn extends Piece{
 
     public Pawn(MoveStrategy strategy, Color color) {
         super(strategy, color);
+        this.moved = false;
+    }
+
+    public Pawn(MoveStrategy strategy, Color color, ImageView image) {
+        super(strategy, color, image);
         this.moved = false;
     }
 
