@@ -22,7 +22,13 @@ public class PawnStrategy implements MoveStrategy{
         Map<Color, List<Point>> moves = this.calculateMoves(currentCell.getPoint());
         for(Point potentialPoint: moves.get(this.color)){
             if (Utility.validPoint(potentialPoint)){
-                possibleMoves.add(Board.getInstance().getCell(potentialPoint));
+                Cell cell = Board.getInstance().getCell(potentialPoint);
+                if (cell.isEmpty() || cell.getPiece().getColor() != this.color) {
+                    possibleMoves.add(cell);
+                }
+                if (!cell.isEmpty()) {
+                    break;
+                }
             }
         }
 
@@ -40,13 +46,11 @@ public class PawnStrategy implements MoveStrategy{
                 put(Color.BLACK,
                         new ArrayList<>(Arrays.asList
                                 (new Point(point.getX() +1, point.getY()),
-                                        new Point(point.getX() + 1, point.getY() - 1),
-                                        new Point(point.getX() + 1, point.getY() + 1))));
+                                        new Point(point.getX() + 2, point.getY()))));
                 put(Color.WHITE,
                         new ArrayList<>(Arrays.asList
                                 (new Point(point.getX()-1, point.getY()),
-                                        new Point(point.getX() - 1, point.getY()  - 1),
-                                        new Point(point.getX() - 1, point.getY() + 1))));
+                                        new Point(point.getX() - 2, point.getY()))));
             }
         };
     }
