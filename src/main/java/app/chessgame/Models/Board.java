@@ -23,9 +23,9 @@ public class Board {
          for (int i = 0; i < rows; i++) {
              for (int j = 0; j < cols; j++) {
                  if ((i+j) % 2 == 0) {
-                     cells[i][j] = new Cell(Color.WHITE, new Point(i, j)); // case blanche
+                     cells[i][j] = new Cell(Color.BEIGE, new Point(i, j)); // case blanche
                  } else {
-                     cells[i][j] = new Cell (Color.BLACK, new Point(i, j)); // case noire
+                     cells[i][j] = new Cell (Color.BROWN, new Point(i, j)); // case noire
                  }
              }
          }
@@ -38,16 +38,20 @@ public class Board {
          for (int i = 0; i < rows; i++) {
              for (int j = 0; j < cols; j++) {
                  if ((i+j) % 2 == 0) {
-                     cells[i][j] = new Cell( Color.WHITE, new Point(i, j)); // case blanche
+                     cells[i][j] = new Cell( Color.BEIGE, new Point(i, j)); // case blanche
                  } else {
-                     cells[i][j] = new Cell (Color.BLACK, new Point(i, j)); // case noire
+                     cells[i][j] = new Cell (Color.BROWN, new Point(i, j)); // case noire
                  }
+             }
+         }
 
+         for (int i = 0; i < rows; i++) {
+             for (int j = 0; j < cols; j++) {
                  if(i == 1 || i == 6){
                      Color color = i ==1?Color.BLACK:Color.WHITE;
                      cells[i][j].setPiece(factory.createPiece(PieceEnum.PAWN, color));
                  } else if ((i == 0 || i == 7) ) {
-                     Color color = i ==7?Color.BLACK:Color.WHITE;
+                     Color color = i ==0?Color.BLACK:Color.WHITE;
                      switch (j) {
                          case 0, 7 -> cells[i][j].setPiece(factory.createPiece(PieceEnum.ROOK, color));
                          case 1, 6 -> cells[i][j].setPiece(factory.createPiece(PieceEnum.KNIGHT, color));
@@ -60,6 +64,7 @@ public class Board {
          }
      }
 
+
     /**
      * Get a singletone instance of the board class
      * @return a singletone instance of the board class
@@ -70,6 +75,7 @@ public class Board {
                  instance = new Board(new PieceFactory());
          }
          catch (Exception e){
+             e.printStackTrace();
              instance = new Board();
          }
 
@@ -119,7 +125,7 @@ public class Board {
             int row = scanner.nextInt();
             System.out.println("Input Col:");
             int col = scanner.nextInt();
-            Cell cell = board.getCell(new Point(row, col));
+            Cell cell = board.getCell(new Point(col, row));
             List<Cell> cells = cell.getPiece().possibleMoves(cell);
             board.highlightCells(cells);
         }

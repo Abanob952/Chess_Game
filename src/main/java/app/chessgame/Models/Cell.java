@@ -1,5 +1,6 @@
 package app.chessgame.Models;
 import app.chessgame.Models.ChessPieces.Piece;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.paint.Color;
 
 public class Cell {
@@ -7,6 +8,11 @@ public class Cell {
     Color color;
     Piece piece = null;
 
+    public SimpleStringProperty colorObservableProperty() {
+        return colorObservable;
+    }
+
+    private SimpleStringProperty colorObservable;
     public boolean isHighlited() {
         return isHighlited;
     }
@@ -22,6 +28,7 @@ public class Cell {
         this.color = color;
         this.point = point;
         this.isHighlited = false;
+        this.colorObservable = new SimpleStringProperty(color.toString().replace("0x", "#"));
     }
 
     public Cell(Color color, Point point, Piece piece){
@@ -29,10 +36,14 @@ public class Cell {
         this.point = point;
         this.piece = piece;
         this.isHighlited = false;
+        this.colorObservable = new SimpleStringProperty(color.toString().replace("0x", "#"));
     }
 
     //Setter et Getter
-    public Color getColor(){
+    public Color getColor()
+    {
+        if (isHighlited)
+            return Color.YELLOW;
         return this.color;
     }
 
@@ -44,6 +55,10 @@ public class Cell {
         this.piece = piece;
     }
 
+    public SimpleStringProperty getColorObservable() {
+        return colorObservable;
+    }
+
     public Piece getPiece(){
         return piece;
     }
@@ -51,7 +66,6 @@ public class Cell {
      public boolean isEmpty(){
         return (this.piece == null);
     }
-
 
     public Point getPoint(){
         return this.point;
@@ -64,6 +78,17 @@ public class Cell {
         if(isHighlited)
             return ".";
         // renvoie la couleur de la cellule à la position donnée sous forme de chaîne de caractères "W" ou "B"
-        return getColor() == Color.WHITE ? "W" : "B";
+        return getColor() == Color.BEIGE ? "W" : "B";
+    }
+
+    public void updateColor (){
+        if (this.isHighlited){
+            this.isHighlited = false;
+            this.getColorObservable().setValue(this.getColor().toString().replace("0x", "#"));
+            return;
+        }
+
+        this.isHighlited = true;
+        this.getColorObservable().setValue(this.getColor().toString().replace("0x", "#"));
     }
 }

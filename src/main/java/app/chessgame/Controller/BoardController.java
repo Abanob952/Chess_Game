@@ -1,17 +1,16 @@
 package app.chessgame.Controller;
 
 import app.chessgame.Models.Board;
+import app.chessgame.Models.CellsObserver;
 import app.chessgame.Models.Cell;
-import app.chessgame.Models.ChessPieces.Piece;
-import app.chessgame.Models.Point;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.paint.Color;
 
 public class BoardController {
+    private CellsObserver observer = new CellsObserver();
     @FXML
     private GridPane chessBoard;
     private static final int rows = 8;
@@ -27,34 +26,79 @@ public class BoardController {
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++){
                 Cell cell = Board.getInstance().getCell(i, j);
-                Piece piece = cell.getPiece();
-                var button = this.createButton(piece, cell.getColor());
+                var button = this.createButton(cell);
                 chessBoard.getChildren().add(button);
                 GridPane.setConstraints(button, j, i, 1, 1);
             }
         }
     }
 
-    public RowConstraints createRowConstraint(){
+    private RowConstraints createRowConstraint(){
         var constraint =  new RowConstraints();
         constraint.setPercentHeight(12.5);
         return constraint;
     }
 
-    public ColumnConstraints createColumnConstraint(){
+    private ColumnConstraints createColumnConstraint(){
         var constraint =  new ColumnConstraints(12.5);
         constraint.setPercentWidth(12.5);
         return constraint;
     }
 
-    public Button createButton(Piece piece, Color color){
+    public Button createButton(Cell cell){
         Button button = new Button();
+        var piece = cell.getPiece();
+        cell.getColorObservable().addListener((observable, oldValue, newValue) -> {
+            button.setStyle("-fx-background-color:"+ newValue+";");
+        });
+
         button.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
         button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        button.setUserData(piece);
-        button.setStyle("-fx-background-color:"+ color.toString().replace("0x", "#")+";" +
+        button.setUserData(cell);
+        button.setStyle("-fx-background-color:"+ cell.getColor().toString().replace("0x", "#") +";" +
                 "-fx-background-radius: 0;" +
                 "-fx-padding: 0;");
+        if(piece!= null){
+            button.setGraphic(piece.getImage());
+        }
+
+        button.setOnMouseClicked(event -> {
+            if(cell.isHighlited()){
+                uncheckCell(button);
+            }
+            else{
+                checkCell(button);
+            }
+        });
+
         return button;
+    }
+
+    private void uncheckCell(Button button){
+        //var cell = (Cell)button.getUserData();
+//        button.setStyle("-fx-background-color:"+cell.getColor().toString().replace("0x", "#")+";");
+        this.observer.notifySubscribers();
+        this.observer.clear();
+    }
+
+    private void checkCell(Button button){
+        var cell = (Cell)button.getUserData();
+        if(cell.isEmpty()){
+            this.observer.notifySubscribers();
+            this.observer.clear();
+            return;
+        }
+
+        this.observer.notifySubscribers();
+        this.observer.clear();
+        this.observer.subscribe(cell);
+        //this.observer.subscribe(Board.getInstance().getCell(cell.getPoint().getX(),cell.getPoint().getY()));
+        var piece = cell.getPiece();
+        var moves = piece.possibleMoves(cell);
+        for (Cell move: moves) {
+            this.observer.subscribe(move);
+        }
+
+        this.observer.notifySubscribers();
     }
 }

@@ -1,13 +1,16 @@
 package app.chessgame.Models.ChessPieces;
 
 import app.chessgame.Models.MoveStrategy;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class Knight extends Piece {
     public Knight(MoveStrategy strategy, Color color) {
         super(strategy, color);
     }
-
+    public Knight(MoveStrategy strategy, Color color, ImageView image) {
+        super(strategy, color, image);
+    }
     public Knight(MoveStrategy strategy) {
         super(strategy);
     }

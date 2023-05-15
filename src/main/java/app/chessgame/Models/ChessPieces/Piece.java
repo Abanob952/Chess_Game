@@ -2,14 +2,20 @@ package app.chessgame.Models.ChessPieces;
 
 import app.chessgame.Models.Cell;
 import app.chessgame.Models.MoveStrategy;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 import java.util.List;
 
 public class Piece {
+    private ImageView image;
     private Color color;
     private boolean inGame;
     private final MoveStrategy moveStrategy;
+
+    public ImageView getImage() {
+        return image;
+    }
 
     public Piece(MoveStrategy strategy){
         this.inGame = false;
@@ -20,6 +26,14 @@ public class Piece {
         this.inGame = false;
         this.moveStrategy = strategy;
         this.color = color;
+    }
+
+
+    public Piece(MoveStrategy strategy, Color color, ImageView image){
+        this.inGame = false;
+        this.moveStrategy = strategy;
+        this.color = color;
+        this.image = image;
     }
     /**
      * Used to check if this piece was eaten or not
