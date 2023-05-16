@@ -3,19 +3,35 @@ package app.chessgame.Controller;
 import app.chessgame.Models.Board;
 import app.chessgame.Models.CellsObserver;
 import app.chessgame.Models.Cell;
+import app.chessgame.Models.Events.TurnChangeListener;
+import app.chessgame.Models.Match;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
 import javafx.scene.layout.VBox;
 
-public class BoardController {
+public class BoardController implements TurnChangeListener {
+    private final Match match = new Match();
     private CellsObserver observer = new CellsObserver();
+    private Cell isSelected;
+    private Cell lastPlayed;
     @FXML
     private GridPane chessBoard;
+
+    @FXML
+    private Label player1Label;
+    @FXML
+    private Label player2Label;
+
     private static final int rows = 8;
     private static final int columns = 8;
 
@@ -56,6 +72,14 @@ public class BoardController {
                 }
             }
         }
+
+        player1Label.getStyleClass().add("highlight");
+        player2Label.getStyleClass().remove("highlight");
+        player1Label.setText(this.match.getPlayer1().getName());
+        player2Label.setText(this.match.getPlayer2().getName());
+
+        this.match.subscribeToTurnChangedEvent(this);
+        this.match.startMatch();
     }
 
 
@@ -90,7 +114,17 @@ public class BoardController {
         }
 
         button.setOnMouseClicked(event -> {
+
             if(cell.isHighlited()){
+                if(!cell.isEmpty() && cell.getPiece().getColor() != this.isSelected.getPiece().getColor()){
+                    this.match.getTurn().addLostPiece(cell.getPiece());
+                }
+
+                if(!this.match.play(this.isSelected, cell))
+                    return;
+
+                this.move(this.isSelected, cell, button);
+
                 uncheckCell(button);
             }
             else{
@@ -104,6 +138,7 @@ public class BoardController {
     private void uncheckCell(Button button){
         //var cell = (Cell)button.getUserData();
 //        button.setStyle("-fx-background-color:"+cell.getColor().toString().replace("0x", "#")+";");
+        this.isSelected = null;
         this.observer.notifySubscribers();
         this.observer.clear();
     }
@@ -111,13 +146,12 @@ public class BoardController {
     private void checkCell(Button button){
         var cell = (Cell)button.getUserData();
         if(cell.isEmpty()){
-            this.observer.notifySubscribers();
-            this.observer.clear();
+            this.unhighlightCells();
             return;
         }
 
-        this.observer.notifySubscribers();
-        this.observer.clear();
+        this.isSelected = cell;
+        this.unhighlightCells();
         this.observer.subscribe(cell);
         //this.observer.subscribe(Board.getInstance().getCell(cell.getPoint().getX(),cell.getPoint().getY()));
         var piece = cell.getPiece();
@@ -127,5 +161,33 @@ public class BoardController {
         }
 
         this.observer.notifySubscribers();
+    }
+
+    private void unhighlightCells(){
+        this.observer.notifySubscribers();
+        this.observer.clear();
+    }
+
+    private void move(Cell source, Cell target, Button button){
+        var sourcePiece = source.getPiece();
+        source.move(target);
+        button.setGraphic(sourcePiece.getImage());
+    }
+
+    private void switchLabelsColor(){
+        var playerNumber = this.match.getTurn().getColor() == Color.BLACK? 1: 2;
+        if(playerNumber == 1 ){
+            player1Label.getStyleClass().add("highlight");
+            player2Label.getStyleClass().remove("highlight");
+            return;
+        }
+
+        player2Label.getStyleClass().add("highlight");
+        player1Label.getStyleClass().remove("highlight");
+    }
+
+    @Override
+    public void turnChanged() {
+        this.switchLabelsColor();
     }
 }

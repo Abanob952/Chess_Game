@@ -22,10 +22,8 @@ public class Pawn extends Piece{
         this.moved = false;
     }
 
-    @Override
-    public void move(Cell cell) {
+    public void moved() {
         this.moved = true;
-        super.move(cell);
     }
 
     /**

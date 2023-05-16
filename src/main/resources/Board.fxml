@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <GridPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.chessgame.Controller.BoardController">
@@ -16,5 +17,13 @@
       <GridPane fx:id="chessBoard" style="-fx-background-color: red;" GridPane.columnIndex="1" GridPane.rowSpan="3">
 
       </GridPane>
+      <StackPane fx:id="player1StackPane" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="0">
+         <children>
+            <Label fx:id="player1Label" text="Label" />
+         </children></StackPane>
+      <StackPane fx:id="player2StackPane" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+         <children>
+            <Label fx:id="player2Label" text="Label" />
+         </children></StackPane>
    </children>
 </GridPane>

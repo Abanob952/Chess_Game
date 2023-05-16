@@ -1,3 +1,15 @@
 .button{
 
 }
+#player1StackPane, #player2StackPane{
+    -fx-background-color: black;
+}
+
+.label{
+    -fx-padding: 10px;
+    -fx-text-fill: white;
+}
+
+.highlight{
+    -fx-background-color: lightblue;
+}
