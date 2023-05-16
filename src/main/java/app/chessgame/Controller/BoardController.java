@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -16,6 +17,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 
 public class BoardController implements TurnChangeListener {
     private final Match match = new Match();
@@ -35,17 +37,39 @@ public class BoardController implements TurnChangeListener {
 
     @FXML
     public void initialize() {
-        for (int i = 0; i < rows; i++){
+        for (int i = 0; i < rows; i++) {
             chessBoard.getColumnConstraints().add(this.createColumnConstraint());
             chessBoard.getRowConstraints().add(this.createRowConstraint());
         }
 
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
                 Cell cell = Board.getInstance().getCell(i, j);
                 var button = this.createButton(cell);
                 chessBoard.getChildren().add(button);
                 GridPane.setConstraints(button, j, i, 1, 1);
+
+                if (i == rows - 1 && j == 0) {
+                    VBox labelContainer = new VBox();
+                    labelContainer.setAlignment(Pos.CENTER_LEFT);
+                    labelContainer.getStyleClass().add("coordinate-label");
+                    Label rowLabel = new Label(Integer.toString(rows - i));
+                    Label columnLabel = new Label("a");
+                    labelContainer.getChildren().addAll(rowLabel, columnLabel);
+                    GridPane.setConstraints(labelContainer, j, i);
+                    chessBoard.getChildren().add(labelContainer);
+                } else if (i == rows - 1 && j > 0) {
+                    char columnChar = (char) ('b' + (j - 1));
+                    Label columnLabel = new Label(Character.toString(columnChar));
+                    GridPane.setConstraints(columnLabel, j, i);
+                    chessBoard.getChildren().add(columnLabel);
+                } else if (j == 0 && i < rows - 1) {
+                    int rowNumber = rows - i;
+                    Label rowLabel = new Label(Integer.toString(rowNumber));
+                    rowLabel.getStyleClass().add("coordinate-label");
+                    GridPane.setConstraints(rowLabel, j, i);
+                    chessBoard.getChildren().add(rowLabel);
+                }
             }
         }
 
@@ -57,6 +81,8 @@ public class BoardController implements TurnChangeListener {
         this.match.subscribeToTurnChangedEvent(this);
         this.match.startMatch();
     }
+
+
 
     private RowConstraints createRowConstraint(){
         var constraint =  new RowConstraints();
