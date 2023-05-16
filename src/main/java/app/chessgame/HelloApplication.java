@@ -14,7 +14,8 @@ public class HelloApplication extends Application {
         var res = HelloApplication.class.getResource("/Board.fxml");
         fxmlLoader.setLocation(res);
         Scene scene = new Scene(fxmlLoader.load(), 800, 800);
-        stage.setTitle("Hello!");
+        scene.getStylesheets().add(getClass().getResource("/Css/board.css").toExternalForm());
+        stage.setTitle("Chess");
         stage.setScene(scene);
         stage.show();
     }

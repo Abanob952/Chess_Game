@@ -1,16 +1,15 @@
 package app.chessgame.Models;
+import app.chessgame.Models.ChessPieces.Pawn;
 import app.chessgame.Models.ChessPieces.Piece;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class Cell {
     private Point point;
     Color color;
     Piece piece = null;
-
-    public SimpleStringProperty colorObservableProperty() {
-        return colorObservable;
-    }
 
     private SimpleStringProperty colorObservable;
     public boolean isHighlited() {
@@ -53,6 +52,18 @@ public class Cell {
         }
 
         this.piece = piece;
+    }
+
+    /**
+     * moves the piece in this cell to the Cell passed in param
+     * @param cell
+     */
+
+    public void move(Cell cell){
+        cell.setPiece(this.piece);
+        if(this.piece instanceof Pawn)
+            ((Pawn)this.piece).moved();
+        this.piece = null;
     }
 
     public SimpleStringProperty getColorObservable() {

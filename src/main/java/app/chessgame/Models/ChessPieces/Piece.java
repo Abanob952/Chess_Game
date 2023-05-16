@@ -56,14 +56,6 @@ public class Piece {
         return this.moveStrategy.getPossibleMoves(currentCell);
     }
 
-    /**
-     * moves this piece to the Cell passed in param
-     * @param cell
-     */
-
-    public void move(Cell cell){
-        cell.setPiece(this);
-    }
 
     public Color getColor(){
         return this.color;
