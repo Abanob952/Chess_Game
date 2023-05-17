@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dbc471d9-6656-4c9e-b88a-a89136dbec26" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/chessgame/Controller/BoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/chessgame/Controller/BoardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/BishopStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/BishopStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/KingStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/KingStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/KnightStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/KnightStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/Match.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/PawnStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/PawnStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/QueenStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/QueenStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/RookStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/chessgame/Models/RookStrategy.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="ChessGame" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="ChessGame" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="ChessGame" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2PvfhgdMkj8cMYo9TCfyjTvUTgG" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="chess_game [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.chess_game [run]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dbc471d9-6656-4c9e-b88a-a89136dbec26" name="Changes" comment="" />
+      <created>1684342599748</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1684342599748</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
