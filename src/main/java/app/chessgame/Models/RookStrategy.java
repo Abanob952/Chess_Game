@@ -23,18 +23,16 @@ public class RookStrategy implements MoveStrategy {
     public List<Cell> getPossibleMoves(Cell currentCell) {
         List<Cell> possibleMoves = new ArrayList<>();
         Map<Color, List<Point>> moves = this.calculateMoves(currentCell.getPoint());
-        for(Point potentialPoint: moves.get(this.color)){
-            if (Utility.validPoint(potentialPoint)){
-                Cell cell = Board.getInstance().getCell(potentialPoint);
-                if (cell.isEmpty() || cell.getPiece().getColor() != this.color) {
-                    possibleMoves.add(cell);
-                }
-                if (!cell.isEmpty()) {
-                    break;
+        for (Point potentialPoint : moves.get(this.color)) {
+            if (Utility.validPoint(potentialPoint)) {
+                Cell potentialCell = Board.getInstance().getCell(potentialPoint);
+                if (potentialCell.isEmpty() || potentialCell.getPiece().getColor() != this.color) {
+                    if (isPathClear(currentCell, potentialCell)) {
+                        possibleMoves.add(potentialCell);
+                    }
                 }
             }
         }
-
         return possibleMoves;
     }
 
@@ -49,5 +47,24 @@ public class RookStrategy implements MoveStrategy {
         }
         moves.put(color, possibleMoves);
         return moves;
+    }
+    private boolean isPathClear(Cell currentCell, Cell potentialCell) {
+        int startX = currentCell.getPoint().getX();
+        int startY = currentCell.getPoint().getY();
+        int endX = potentialCell.getPoint().getX();
+        int endY = potentialCell.getPoint().getY();
+        int xDirection = Integer.compare(endX, startX);
+        int yDirection = Integer.compare(endY, startY);
+        int x = startX + xDirection;
+        int y = startY + yDirection;
+        while (x != endX || y != endY) {
+            Cell cell = Board.getInstance().getCell(x, y);
+            if (!cell.isEmpty()) {
+                return false;
+            }
+            x += xDirection;
+            y += yDirection;
+        }
+        return true;
     }
 }

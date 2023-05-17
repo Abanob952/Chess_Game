@@ -13,8 +13,8 @@ public class Match {
     private TurnChangedEvent turnChangedEvent;
     private MoveValidator validator;
     public Match(){
-        this.player1 = new Player("player1", Color.BLACK);
-        this.player2 = new Player("player2", Color.WHITE);
+        this.player1 = new Player("player1", Color.WHITE);
+        this.player2 = new Player("player2", Color.BLACK);
         this.started = false;
         this.turn = player1;
         this.validator = new MoveValidator(this);

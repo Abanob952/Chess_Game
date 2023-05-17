@@ -73,8 +73,8 @@ public class BoardController implements TurnChangeListener {
             }
         }
 
-        player1Label.getStyleClass().add("highlight");
-        player2Label.getStyleClass().remove("highlight");
+        player2Label.getStyleClass().add("highlight");
+        player1Label.getStyleClass().remove("highlight");
         player1Label.setText(this.match.getPlayer1().getName());
         player2Label.setText(this.match.getPlayer2().getName());
 

@@ -20,20 +20,17 @@ public class KingStrategy implements MoveStrategy {
     public List<Cell> getPossibleMoves(Cell currentCell) {
         List<Cell> possibleMoves = new ArrayList<>();
         Map<Color, List<Point>> moves = this.calculateMoves(currentCell.getPoint());
-        for(Point potentialPoint: moves.get(this.color)){
-            if (Utility.validPoint(potentialPoint)){
-                Cell cell = Board.getInstance().getCell(potentialPoint);
-                if (cell.isEmpty() || cell.getPiece().getColor() != this.color) {
-                    possibleMoves.add(cell);
-                }
-                if (!cell.isEmpty()) {
-                    break;
+        for (Point potentialPoint : moves.get(this.color)) {
+            if (Utility.validPoint(potentialPoint)) {
+                Cell potentialCell = Board.getInstance().getCell(potentialPoint);
+                if (potentialCell.isEmpty() || potentialCell.getPiece().getColor() != this.color) {
+                    possibleMoves.add(potentialCell);
                 }
             }
         }
-
         return possibleMoves;
     }
+
 
     /**
      * Calculates all the possible moves for a king from the given point
