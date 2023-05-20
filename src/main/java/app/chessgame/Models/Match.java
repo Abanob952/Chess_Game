@@ -1,5 +1,7 @@
 package app.chessgame.Models;
 
+import app.chessgame.Models.Events.CheckEvent;
+import app.chessgame.Models.Events.CheckListener;
 import app.chessgame.Models.Events.TurnChangeListener;
 import app.chessgame.Models.Events.TurnChangedEvent;
 import javafx.scene.paint.Color;
@@ -11,6 +13,7 @@ public class Match {
     private Player turn;
 
     private TurnChangedEvent turnChangedEvent;
+    private CheckEvent checkEvent;
     private MoveValidator validator;
     public Match(){
         this.player1 = new Player("player1", Color.WHITE);
@@ -19,6 +22,7 @@ public class Match {
         this.turn = player1;
         this.validator = new MoveValidator(this);
         this.turnChangedEvent = new TurnChangedEvent();
+        this.checkEvent = new CheckEvent();
     }
 
     public Player getPlayer1() {
@@ -53,5 +57,9 @@ public class Match {
 
     public void subscribeToTurnChangedEvent(TurnChangeListener listener){
         this.turnChangedEvent.addEventListener(listener);
+    }
+
+    public void subscribeToCheckEvent(CheckListener listener){
+        this.checkEvent.addEventListener(listener);
     }
 }
