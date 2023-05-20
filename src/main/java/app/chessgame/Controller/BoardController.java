@@ -116,10 +116,6 @@ public class BoardController implements TurnChangeListener {
         button.setOnMouseClicked(event -> {
 
             if(cell.isHighlited()){
-                if(!cell.isEmpty() && cell.getPiece().getColor() != this.isSelected.getPiece().getColor()){
-                    this.match.getTurn().addLostPiece(cell.getPiece());
-                }
-
                 if(!this.match.play(this.isSelected, cell))
                     return;
 
@@ -146,6 +142,7 @@ public class BoardController implements TurnChangeListener {
     private void checkCell(Button button){
         var cell = (Cell)button.getUserData();
         if(cell.isEmpty()){
+            this.isSelected = null;
             this.unhighlightCells();
             return;
         }
@@ -170,6 +167,9 @@ public class BoardController implements TurnChangeListener {
 
     private void move(Cell source, Cell target, Button button){
         var sourcePiece = source.getPiece();
+        if(!target.isEmpty() && target.getPiece().getColor() != source.getPiece().getColor()){
+            this.match.getTurn().addLostPiece(target.getPiece());
+        }
         source.move(target);
         button.setGraphic(sourcePiece.getImage());
     }

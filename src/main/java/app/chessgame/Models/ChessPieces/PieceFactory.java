@@ -13,28 +13,28 @@ public class PieceFactory {
      * @return a piece corresponding the enum and the color passed
      * @throws if enum passed does not correspond to any piece
      */
-    public Piece createPiece(PieceEnum piece, Color color) {
+    public Piece createPiece(PieceEnum piece, Color color, Point point) {
         PieceDefinition definition = new PieceDefinition(piece, color);
         ImageView image = ImageViewFactoy.getImageForPiece(definition);
         image.setPreserveRatio(false);
         switch (piece){
             case PAWN -> {
-                return new Pawn(new PawnStrategy(color), color, image);
+                return new Pawn(new PawnStrategy(color), color, image, point);
             }
             case KING -> {
-                return new King(new KingStrategy(color), color, image);
+                return new King(new KingStrategy(color), color, image, point);
             }
             case KNIGHT -> {
-                return new Knight(new KnightStrategy(color), color, image);
+                return new Knight(new KnightStrategy(color), color, image, point);
             }
             case QUEEN -> {
-                return new Queen(new QueenStrategy(color), color, image);
+                return new Queen(new QueenStrategy(color), color, image, point);
             }
             case ROOK -> {
-                return new Rook(new RookStrategy(color), color, image);
+                return new Rook(new RookStrategy(color), color, image, point);
             }
             case BISHOP -> {
-                return new Bishop(new BishopStrategy(color), color, image);
+                return new Bishop(new BishopStrategy(color), color, image, point);
             }
             default -> throw new RuntimeException("Piece " + piece + "does not exist");
         }
