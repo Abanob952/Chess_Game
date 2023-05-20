@@ -1,6 +1,7 @@
 package app.chessgame.Models.ChessPieces;
 
 import app.chessgame.Models.MoveStrategy;
+import app.chessgame.Models.Point;
 import app.chessgame.Models.RookStrategy;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -12,6 +13,11 @@ public class Rook extends Piece {
     public Rook(MoveStrategy strategy, Color color, ImageView image) {
         super(strategy, color, image);
     }
+
+    public Rook(MoveStrategy strategy, Color color, ImageView image, Point point) {
+        super(strategy, color, image, point);
+    }
+
     @Override
     public String toString() {
         if(this.getColor() == Color.WHITE)

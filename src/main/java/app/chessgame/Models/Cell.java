@@ -61,6 +61,7 @@ public class Cell {
 
     public void move(Cell cell){
         cell.setPiece(this.piece);
+        this.piece.setPoint(cell.getPoint());
         if(this.piece instanceof Pawn)
             ((Pawn)this.piece).moved();
         this.piece = null;
