@@ -9,6 +9,7 @@ public class Match {
     private boolean started;
     private Player turn;
 
+    private CheckMateEvent checkMateEvent;
     private TurnChangedEvent turnChangedEvent;
     private CheckEvent checkEvent;
     private MoveValidator validator;
@@ -20,6 +21,7 @@ public class Match {
         this.validator = new MoveValidator(this);
         this.turnChangedEvent = new TurnChangedEvent();
         this.checkEvent = new CheckEvent();
+        this.checkMateEvent = new CheckMateEvent();
     }
 
     public Player getPlayer1() {
@@ -48,6 +50,11 @@ public class Match {
             this.turn = this.turn == this.player1? this.player2: this.player1;
             this.turnChangedEvent.raiseEvent();
             if(this.validator.kingInCheck(this.turn.getColor())){
+                if (this.validator.isCheckMate(this.turn.getColor())){
+                    this.checkMateEvent.raiseEvent();
+                    this.started = false;
+                    return true;
+                }
                 this.checkEvent.raiseEvent(this.turn.getColor());
             }
         } else if (result == InvalidMoveReason.CHECK) {
@@ -65,7 +72,10 @@ public class Match {
         this.turnChangedEvent.addEventListener(listener);
     }
 
-    public void subscribeToCheckEvent(CheckListener listener){
+    public void subscribeToCheckEvent(CheckEventListener listener){
         this.checkEvent.addEventListener(listener);
+    }
+    public void subscribeToCheckMateEvent(CheckMateEventListener listener){
+        this.checkMateEvent.addEventListener(listener);
     }
 }

@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CheckEvent {
-    private List<CheckListener> listeners = new ArrayList<>();
+    private List<CheckEventListener> listeners = new ArrayList<>();
 
-    public void addEventListener(CheckListener listener) {
+    public void addEventListener(CheckEventListener listener) {
         listeners.add(listener);
     }
 
-    public void removeEventListener(CheckListener listener) {
+    public void removeEventListener(CheckEventListener listener) {
         listeners.remove(listener);
     }
 
     public void raiseEvent(Color color) {
-        for (CheckListener listener : listeners) {
+        for (CheckEventListener listener : listeners) {
             listener.check(color);
         }
     }

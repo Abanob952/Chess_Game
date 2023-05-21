@@ -4,12 +4,10 @@ import app.chessgame.Models.Board;
 import app.chessgame.Models.CellsObserver;
 import app.chessgame.Models.Cell;
 import app.chessgame.Models.ChessPieces.Piece;
-import app.chessgame.Models.Events.CheckListener;
+import app.chessgame.Models.Events.CheckEventListener;
+import app.chessgame.Models.Events.CheckMateEventListener;
 import app.chessgame.Models.Events.TurnChangeListener;
 import app.chessgame.Models.Match;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -18,7 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-public class BoardController implements TurnChangeListener, CheckListener {
+public class BoardController implements TurnChangeListener, CheckEventListener, CheckMateEventListener {
     private final Match match = new Match();
 
     private CellsObserver observer = new CellsObserver();
@@ -89,6 +87,7 @@ public class BoardController implements TurnChangeListener, CheckListener {
 
         this.match.subscribeToTurnChangedEvent(this);
         this.match.subscribeToCheckEvent(this);
+        this.match.subscribeToCheckMateEvent(this);
         this.match.startMatch();
     }
 
@@ -216,5 +215,18 @@ public class BoardController implements TurnChangeListener, CheckListener {
     @Override
     public void check(Color color) {
         this.showCheckLabel(color);
+    }
+
+    @Override
+    public void CheckMate() {
+        var color = this.match.getTurn().getColor();
+        if (color == Color.BLACK){
+            this.player1CheckLabel.setText("Check Mate");
+            this.player1CheckLabel.setVisible(true);
+        }
+        else{
+            this.player2CheckLabel.setText("Check Mate");
+            this.player2CheckLabel.setVisible(true);
+        }
     }
 }

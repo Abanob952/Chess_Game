@@ -12,26 +12,26 @@ public class MoveValidator {
 
     private Match match;
 
-    public MoveValidator(Match match){
+    public MoveValidator(Match match) {
         this.match = match;
     }
 
-    public InvalidMoveReason validateMove(Cell source, Cell target){
-        if(!this.match.isStarted())
+    public InvalidMoveReason validateMove(Cell source, Cell target) {
+        if (!this.match.isStarted())
             return InvalidMoveReason.GAMEHASNOTSTARTED;
 
         // different player turn
-        if(source.getPiece().getColor() != this.match.getTurn().getColor())
+        if (source.getPiece().getColor() != this.match.getTurn().getColor())
             return InvalidMoveReason.WRONGTURN;
 
         // trying to eat same friendly piece
-        if(target.getPiece() != null && source.getPiece().getColor() == target.getPiece().getColor())
+        if (target.getPiece() != null && source.getPiece().getColor() == target.getPiece().getColor())
             return InvalidMoveReason.FRIENDLY;
 
-        if(!this.resolvesCheckIfExists(source, target))
+        if (!this.resolvesCheckIfExists(source, target))
             return InvalidMoveReason.CHECK;
 
-        if(this.willCauseCheck(source, target))
+        if (this.willCauseCheck(source, target))
             return InvalidMoveReason.WILLCAUSECHECK;
 
         return InvalidMoveReason.VALID;
@@ -39,44 +39,46 @@ public class MoveValidator {
 
     /**
      * Checks if this move will cause the current's player king to be in check
+     *
      * @param source
      * @param target
      * @return true if it will cause check, false otherwise
      */
-    private boolean willCauseCheck(Cell source, Cell target){
-        var tmpSourcePiece = source.getPiece() == null? null: source.getPiece();
-        var tmpTargetPiece = target.getPiece() == null? null: target.getPiece();
+    private boolean willCauseCheck(Cell source, Cell target) {
+        var tmpSourcePiece = source.getPiece() == null ? null : source.getPiece();
+        var tmpTargetPiece = target.getPiece() == null ? null : target.getPiece();
 
         source.move(target);
-        var check= this.kingInCheck(tmpSourcePiece.getColor());
-        this.undoMove(source, target,tmpTargetPiece);
+        var check = this.kingInCheck(tmpSourcePiece.getColor());
+        this.undoMove(source, target, tmpTargetPiece);
         return check;
     }
 
-    private void undoMove(Cell source, Cell target, Piece tmpTargetPiece){
+    private void undoMove(Cell source, Cell target, Piece tmpTargetPiece) {
         target.move(source);
         target.setPiece(tmpTargetPiece);
     }
 
     /**
      * Checks if a check exists and if the move is going to solve it
+     *
      * @param source
      * @param target
      * @return true if the move will resolve the check if exists or if there is no check, false otherwise
      */
-    private boolean resolvesCheckIfExists(Cell source, Cell target){
-        var tmpSourcePiece = source.getPiece() == null? null: source.getPiece();
-        var tmpTargetPiece = target.getPiece() == null? null: target.getPiece();
+    private boolean resolvesCheckIfExists(Cell source, Cell target) {
+        var tmpSourcePiece = source.getPiece() == null ? null : source.getPiece();
+        var tmpTargetPiece = target.getPiece() == null ? null : target.getPiece();
 
-        if(this.kingInCheck(source.getPiece().getColor())){
+        if (this.kingInCheck(source.getPiece().getColor())) {
             source.move(target);
-            if(!this.kingInCheck(tmpSourcePiece.getColor())){
+            if (!this.kingInCheck(tmpSourcePiece.getColor())) {
                 this.undoMove(source, target, tmpTargetPiece);
                 return true;
             }
 
-           this.undoMove(source, target, tmpTargetPiece);
-            return true;
+            this.undoMove(source, target, tmpTargetPiece);
+            return false;
         }
 
         return true;
@@ -84,20 +86,21 @@ public class MoveValidator {
 
     /**
      * Checks if the king with the color passed in param is in check
+     *
      * @param color
      * @return true if the king is in check, false otherwise
      */
-    public boolean kingInCheck(Color color){
+    public boolean kingInCheck(Color color) {
         var king = Board.getInstance().getKings().get(color);
         Color enemyColor = this.alternateColor(color);
-        for (HashMap<Color, List<Piece>> table: Board.getInstance().getPieces()) {
+        for (HashMap<Color, List<Piece>> table : Board.getInstance().getPieces()) {
             var pieces = table.get(enemyColor);
-            for (Piece piece: pieces) {
-                if(piece.getPoint()==null)
+            for (Piece piece : pieces) {
+                if (piece.getPoint() == null)
                     continue;
                 var moves = piece.possibleMoves(Board.getInstance().getCell(piece.getPoint()));
-                for (Cell cell:moves) {
-                    if(cell.getPiece() != null && cell.getPiece().equals(king)){
+                for (Cell cell : moves) {
+                    if (cell.getPiece() != null && cell.getPiece().equals(king)) {
                         return true;
                     }
                 }
@@ -107,7 +110,34 @@ public class MoveValidator {
         return false;
     }
 
-    private Color alternateColor(Color color){
-        return color == Color.WHITE? Color.BLACK: Color.WHITE;
+    public boolean isCheckMate(Color color) {
+        var king = Board.getInstance().getKings().get(color);
+        var kingCell = Board.getInstance().getCell(king.getPoint());
+        var moves = king.possibleMoves(kingCell);
+        for (var move : moves) {
+            if (this.resolvesCheckIfExists(kingCell, move)) {
+                return false;
+            }
+        }
+        for (HashMap<Color, List<Piece>> table : Board.getInstance().getPieces()) {
+            var pieces = table.get(color);
+
+            for (Piece piece : pieces) {
+                if (piece.getPoint() == null)
+                    continue;
+                var cellPiece = Board.getInstance().getCell(piece.getPoint());
+                var possibleMoves = piece.possibleMoves(cellPiece);
+                for (Cell cell : possibleMoves) {
+                    if (this.resolvesCheckIfExists(cellPiece, cell)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private Color alternateColor(Color color) {
+        return color == Color.WHITE ? Color.BLACK : Color.WHITE;
     }
 }

@@ -6,7 +6,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class PieceFactory {
-
     /**
      * Factory method, creates a piece corresponding the enum and the color passed
      * @param piece enum corresponding to the piece
