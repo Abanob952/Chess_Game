@@ -2,6 +2,7 @@ package app.chessgame.Models.ChessPieces;
 
 import app.chessgame.Models.MoveStrategy;
 import app.chessgame.Models.Point;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
@@ -13,11 +14,11 @@ public class King extends Piece {
         super(strategy);
     }
 
-    public King(MoveStrategy strategy, Color color, ImageView image) {
+    public King(MoveStrategy strategy, Color color, Image image) {
         super(strategy, color, image);
     }
 
-    public King(MoveStrategy strategy, Color color, ImageView image, Point point) {
+    public King(MoveStrategy strategy, Color color, Image image, Point point) {
         super(strategy, color, image, point);
     }
 

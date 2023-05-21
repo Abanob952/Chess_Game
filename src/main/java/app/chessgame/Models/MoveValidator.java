@@ -1,13 +1,14 @@
 package app.chessgame.Models;
 
 import app.chessgame.Models.ChessPieces.Piece;
+import app.chessgame.Models.Events.InvalidMoveReason;
 import app.chessgame.Models.Events.TurnChangeListener;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class MoveValidator implements TurnChangeListener {
+public class MoveValidator {
 
     private Match match;
 
@@ -15,25 +16,25 @@ public class MoveValidator implements TurnChangeListener {
         this.match = match;
     }
 
-    public boolean validateMove(Cell source, Cell target){
+    public InvalidMoveReason validateMove(Cell source, Cell target){
         if(!this.match.isStarted())
-            return false;
+            return InvalidMoveReason.GAMEHASNOTSTARTED;
 
         // different player turn
         if(source.getPiece().getColor() != this.match.getTurn().getColor())
-            return false;
+            return InvalidMoveReason.WRONGTURN;
 
         // trying to eat same friendly piece
         if(target.getPiece() != null && source.getPiece().getColor() == target.getPiece().getColor())
-            return false;
+            return InvalidMoveReason.FRIENDLY;
 
         if(!this.resolvesCheckIfExists(source, target))
-            return false;
+            return InvalidMoveReason.CHECK;
 
         if(this.willCauseCheck(source, target))
-            return false;
+            return InvalidMoveReason.WILLCAUSECHECK;
 
-        return true;
+        return InvalidMoveReason.VALID;
     }
 
     /**
@@ -86,7 +87,7 @@ public class MoveValidator implements TurnChangeListener {
      * @param color
      * @return true if the king is in check, false otherwise
      */
-    private boolean kingInCheck(Color color){
+    public boolean kingInCheck(Color color){
         var king = Board.getInstance().getKings().get(color);
         Color enemyColor = this.alternateColor(color);
         for (HashMap<Color, List<Piece>> table: Board.getInstance().getPieces()) {
@@ -108,12 +109,5 @@ public class MoveValidator implements TurnChangeListener {
 
     private Color alternateColor(Color color){
         return color == Color.WHITE? Color.BLACK: Color.WHITE;
-    }
-
-    @Override
-    public void turnChanged() {
-//        if(!this.kingInCheck()){
-//
-//        }
     }
 }

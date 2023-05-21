@@ -1,6 +1,7 @@
 package app.chessgame.Models.ChessPieces;
 
 import app.chessgame.Models.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
@@ -15,8 +16,7 @@ public class PieceFactory {
      */
     public Piece createPiece(PieceEnum piece, Color color, Point point) {
         PieceDefinition definition = new PieceDefinition(piece, color);
-        ImageView image = ImageViewFactoy.getImageForPiece(definition);
-        image.setPreserveRatio(false);
+        Image image = ImageViewFactoy.getImageForPiece(definition);
         switch (piece){
             case PAWN -> {
                 return new Pawn(new PawnStrategy(color), color, image, point);
