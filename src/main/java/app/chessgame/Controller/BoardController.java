@@ -3,6 +3,8 @@ package app.chessgame.Controller;
 import app.chessgame.Models.Board;
 import app.chessgame.Models.CellsObserver;
 import app.chessgame.Models.Cell;
+import app.chessgame.Models.ChessPieces.Piece;
+import app.chessgame.Models.Events.CheckListener;
 import app.chessgame.Models.Events.TurnChangeListener;
 import app.chessgame.Models.Match;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -13,24 +15,29 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.layout.VBox;
 
-public class BoardController implements TurnChangeListener {
+public class BoardController implements TurnChangeListener, CheckListener {
     private final Match match = new Match();
+
     private CellsObserver observer = new CellsObserver();
-    private Cell isSelected;
+    private Button isSelected;
     private Cell lastPlayed;
     @FXML
     private GridPane chessBoard;
 
     @FXML
     private Label player1Label;
+
+    @FXML
+    private Label player1CheckLabel;
+
     @FXML
     private Label player2Label;
+
+    @FXML
+    private Label player2CheckLabel;
 
     private static final int rows = 8;
     private static final int columns = 8;
@@ -77,8 +84,11 @@ public class BoardController implements TurnChangeListener {
         player1Label.getStyleClass().remove("highlight");
         player1Label.setText(this.match.getPlayer1().getName());
         player2Label.setText(this.match.getPlayer2().getName());
+        this.player1CheckLabel.setVisible(false);
+        this.player2CheckLabel.setVisible(false);
 
         this.match.subscribeToTurnChangedEvent(this);
+        this.match.subscribeToCheckEvent(this);
         this.match.startMatch();
     }
 
@@ -110,16 +120,17 @@ public class BoardController implements TurnChangeListener {
                 "-fx-background-radius: 0;" +
                 "-fx-padding: 0;");
         if(piece!= null){
-            button.setGraphic(piece.getImage());
+            button.setGraphic(new ImageView(piece.getImage()));
         }
 
         button.setOnMouseClicked(event -> {
 
             if(cell.isHighlited()){
-                if(!this.match.play(this.isSelected, cell))
+                var selectedCell = (Cell)this.isSelected.getUserData();
+                if(!this.match.play(selectedCell, cell))
                     return;
 
-                this.move(this.isSelected, cell, button);
+                this.move(this.isSelected, cell.getPiece(), button);
 
                 uncheckCell(button);
             }
@@ -147,7 +158,7 @@ public class BoardController implements TurnChangeListener {
             return;
         }
 
-        this.isSelected = cell;
+        this.isSelected = button;
         this.unhighlightCells();
         this.observer.subscribe(cell);
         //this.observer.subscribe(Board.getInstance().getCell(cell.getPoint().getX(),cell.getPoint().getY()));
@@ -165,13 +176,9 @@ public class BoardController implements TurnChangeListener {
         this.observer.clear();
     }
 
-    private void move(Cell source, Cell target, Button button){
-        var sourcePiece = source.getPiece();
-        if(!target.isEmpty() && target.getPiece().getColor() != source.getPiece().getColor()){
-            this.match.getTurn().addLostPiece(target.getPiece());
-        }
-        source.move(target);
-        button.setGraphic(sourcePiece.getImage());
+    private void move(Button sourceButton, Piece piece, Button button){
+        sourceButton.setGraphic(null);
+        button.setGraphic(new ImageView(piece.getImage()));
     }
 
     private void switchLabelsColor(){
@@ -186,8 +193,28 @@ public class BoardController implements TurnChangeListener {
         player1Label.getStyleClass().remove("highlight");
     }
 
+    private void showCheckLabel(Color color){
+        if(color == Color.BLACK){
+            this.player1CheckLabel.setVisible(true);
+        }
+        else {
+            this.player2CheckLabel.setVisible(true);
+        }
+    }
+
+    private void hideCheckLabel(){
+        this.player1CheckLabel.setVisible(false);
+        this.player2CheckLabel.setVisible(false);
+    }
+
     @Override
     public void turnChanged() {
         this.switchLabelsColor();
+        this.hideCheckLabel();
+    }
+
+    @Override
+    public void check(Color color) {
+        this.showCheckLabel(color);
     }
 }

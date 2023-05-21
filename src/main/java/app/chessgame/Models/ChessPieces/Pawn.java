@@ -3,6 +3,7 @@ package app.chessgame.Models.ChessPieces;
 import app.chessgame.Models.Cell;
 import app.chessgame.Models.MoveStrategy;
 import app.chessgame.Models.Point;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
@@ -18,12 +19,12 @@ public class Pawn extends Piece{
         this.moved = false;
     }
 
-    public Pawn(MoveStrategy strategy, Color color, ImageView image) {
+    public Pawn(MoveStrategy strategy, Color color, Image image) {
         super(strategy, color, image);
         this.moved = false;
     }
 
-    public Pawn(MoveStrategy strategy, Color color, ImageView image, Point point) {
+    public Pawn(MoveStrategy strategy, Color color, Image image, Point point) {
         super(strategy, color, image, point);
         this.moved = false;
     }

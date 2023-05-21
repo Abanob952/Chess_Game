@@ -1,7 +1,6 @@
 package app.chessgame.Models;
 
-import app.chessgame.Models.Events.TurnChangeListener;
-import app.chessgame.Models.Events.TurnChangedEvent;
+import app.chessgame.Models.Events.*;
 import javafx.scene.paint.Color;
 
 public class Match {
@@ -11,6 +10,7 @@ public class Match {
     private Player turn;
 
     private TurnChangedEvent turnChangedEvent;
+    private CheckEvent checkEvent;
     private MoveValidator validator;
     public Match(){
         this.player1 = new Player("player1", Color.WHITE);
@@ -19,6 +19,7 @@ public class Match {
         this.turn = player1;
         this.validator = new MoveValidator(this);
         this.turnChangedEvent = new TurnChangedEvent();
+        this.checkEvent = new CheckEvent();
     }
 
     public Player getPlayer1() {
@@ -38,13 +39,22 @@ public class Match {
     }
 
     public boolean play(Cell source, Cell target){
-        boolean result = this.validator.validateMove(source, target);
-        if(result){
+        InvalidMoveReason result = this.validator.validateMove(source, target);
+        if(result == InvalidMoveReason.VALID){
+            if(!target.isEmpty() && target.getPiece().getColor() != source.getPiece().getColor()){
+                this.getTurn().addLostPiece(target.getPiece());
+            }
+            source.move(target);
             this.turn = this.turn == this.player1? this.player2: this.player1;
             this.turnChangedEvent.raiseEvent();
+            if(this.validator.kingInCheck(this.turn.getColor())){
+                this.checkEvent.raiseEvent(this.turn.getColor());
+            }
+        } else if (result == InvalidMoveReason.CHECK) {
+            this.checkEvent.raiseEvent(this.turn.getColor());
         }
 
-        return result;
+        return result == InvalidMoveReason.VALID;
     }
 
     public void startMatch(){
@@ -53,5 +63,9 @@ public class Match {
 
     public void subscribeToTurnChangedEvent(TurnChangeListener listener){
         this.turnChangedEvent.addEventListener(listener);
+    }
+
+    public void subscribeToCheckEvent(CheckListener listener){
+        this.checkEvent.addEventListener(listener);
     }
 }
