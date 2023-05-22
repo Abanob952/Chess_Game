@@ -2,6 +2,7 @@ package app.chessgame.Models.ChessPieces;
 
 import app.chessgame.Models.Cell;
 import app.chessgame.Models.MoveStrategy;
+import app.chessgame.Models.PieceDefinition;
 import app.chessgame.Models.Point;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,7 +10,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 
-public class Piece {
+public abstract class Piece {
     private Image image;
     private Color color;
     private boolean inGame;
@@ -78,4 +79,6 @@ public class Piece {
     private boolean isCheck(){
         return false;
     }
+
+    public abstract PieceEnum getType();
 }

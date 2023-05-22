@@ -25,4 +25,9 @@ public class Rook extends Piece {
             return "R";
         return "R";
     }
+
+    @Override
+    public PieceEnum getType() {
+        return PieceEnum.ROOK;
+    }
 }

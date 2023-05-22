@@ -46,4 +46,9 @@ public class Pawn extends Piece{
             return "P";
         return "P";
     }
+
+    @Override
+    public PieceEnum getType() {
+        return PieceEnum.PAWN;
+    }
 }

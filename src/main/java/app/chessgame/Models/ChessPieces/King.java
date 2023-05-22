@@ -28,4 +28,9 @@ public class King extends Piece {
             return "K";
         return "K";
     }
+
+    @Override
+    public PieceEnum getType() {
+        return PieceEnum.KING;
+    }
 }

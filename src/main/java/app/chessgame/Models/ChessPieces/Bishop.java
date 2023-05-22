@@ -2,6 +2,7 @@ package app.chessgame.Models.ChessPieces;
 
 import app.chessgame.Models.BishopStrategy;
 import app.chessgame.Models.MoveStrategy;
+import app.chessgame.Models.PieceDefinition;
 import app.chessgame.Models.Point;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,6 +18,11 @@ public class Bishop extends Piece {
 
     public Bishop(MoveStrategy strategy, Color color, Image image, Point point) {
         super(strategy, color, image, point);
+    }
+
+    @Override
+    public PieceEnum getType() {
+        return PieceEnum.BISHOP;
     }
 
     @Override
