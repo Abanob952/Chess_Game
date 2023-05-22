@@ -51,6 +51,8 @@ public class Cell {
             this.piece.setInGame(false);
         }
 
+        if(piece != null)
+            piece.setInGame(true);
         this.piece = piece;
     }
 

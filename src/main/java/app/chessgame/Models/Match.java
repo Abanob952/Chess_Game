@@ -3,7 +3,7 @@ package app.chessgame.Models;
 import app.chessgame.Models.Events.*;
 import javafx.scene.paint.Color;
 
-public class Match {
+public class Match implements BotEventListener {
     private Player player1;
     private Player player2;
     private boolean started;
@@ -11,17 +11,19 @@ public class Match {
 
     private CheckMateEvent checkMateEvent;
     private TurnChangedEvent turnChangedEvent;
+    private MoveMadeEvent moveMadeEvent;
     private CheckEvent checkEvent;
     private MoveValidator validator;
     public Match(){
-        this.player1 = new Player("player1", Color.WHITE);
-        this.player2 = new Player("player2", Color.BLACK);
         this.started = false;
-        this.turn = player1;
         this.validator = new MoveValidator(this);
         this.turnChangedEvent = new TurnChangedEvent();
         this.checkEvent = new CheckEvent();
         this.checkMateEvent = new CheckMateEvent();
+        this.moveMadeEvent = new MoveMadeEvent();
+        this.player1 = new BotPlayer(Color.BLACK, this);
+        this.player2 = new Player("player2", Color.WHITE);
+        this.turn = player2;
     }
 
     public Player getPlayer1() {
@@ -47,6 +49,7 @@ public class Match {
                 this.getTurn().addLostPiece(target.getPiece());
             }
             source.move(target);
+            this.moveMadeEvent.raiseEvent(new Move(source, target));
             this.turn = this.turn == this.player1? this.player2: this.player1;
             this.turnChangedEvent.raiseEvent();
             if(this.validator.kingInCheck(this.turn.getColor())){
@@ -75,11 +78,27 @@ public class Match {
     public void subscribeToCheckEvent(CheckEventListener listener){
         this.checkEvent.addEventListener(listener);
     }
+
     public void subscribeToCheckMateEvent(CheckMateEventListener listener){
         this.checkMateEvent.addEventListener(listener);
     }
 
+    public void subscribeToMoveMadeEvent(MoveMadeEventListener listener){
+        this.moveMadeEvent.addEventListener(listener);
+    }
+
     public InvalidMoveReason validateMove(Move move){
         return this.validator.validateMove(move.getSource(), move.getTarget());
+    }
+
+    public boolean isCheckMate(){
+        return this.validator.isCheckMate(this.turn.getColor());
+    }
+
+    @Override
+    public void botPlay() {
+        if(this.player1.getName().equals("Bot")){
+            this.player1.getPlay();
+        }
     }
 }
