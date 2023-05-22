@@ -1,6 +1,7 @@
 package app.chessgame.Models;
 
 import app.chessgame.Models.ChessPieces.Piece;
+import app.chessgame.Models.ChessPieces.PieceEnum;
 import app.chessgame.Models.Events.InvalidMoveReason;
 import javafx.scene.paint.Color;
 
@@ -14,6 +15,71 @@ public class Engine {
     private static final int bishopValue = 300;
     private static final int rookValue = 500;
     private static final int queenValue = 900;
+    private static final int[][] pawnSquareTable = {
+            { 0,  0,  0,  0,  0,  0,  0,  0},
+            {50, 50, 50, 50, 50, 50, 50, 50},
+            {10, 10, 20, 30, 30, 20, 10, 10},
+            { 5,  5, 10, 25, 25, 10,  5,  5},
+            { 0,  0,  0, 20, 20,  0,  0,  0},
+            { 5, -5,-10,  0,  0,-10, -5,  5},
+            { 5, 10, 10,-20,-20, 10, 10,  5},
+            { 0,  0,  0,  0,  0,  0,  0,  0}
+    };
+
+    private static final int[][] knightSquareTable = {
+            {-50,-40,-30,-30,-30,-30,-40,-50},
+            {-40,-20,  0,  0,  0,  0,-20,-40},
+            {-30,  0, 10, 15, 15, 10,  0,-30},
+            {-30,  5, 15, 20, 20, 15,  5,-30},
+            {-30,  0, 15, 20, 20, 15,  0,-30},
+            {-30,  5, 10, 15, 15, 10,  5,-30},
+            {-40,-20,  0,  5,  5,  0,-20,-40},
+            {-50,-40,-30,-30,-30,-30,-40,-50}
+    };
+    private static final int[][] bishopSquareTable = {
+            {-20,-10,-10,-10,-10,-10,-10,-20},
+            {-10,  0,  0,  0,  0,  0,  0,-10},
+            {-10,  0,  5, 10, 10,  5,  0,-10},
+            {-10,  5,  5, 10, 10,  5,  5,-10},
+            {-10,  0, 10, 10, 10, 10,  0,-10},
+            {-10, 10, 10, 10, 10, 10, 10,-10},
+            {-10,  5,  0,  0,  0,  0,  5,-10},
+            {-20,-10,-10,-10,-10,-10,-10,-20}
+    };
+
+    private static final int[][] rookSquareTable = {
+            {  0,  0,  0,  0,  0,  0,  0,  0},
+            {  5, 10, 10, 10, 10, 10, 10,  5},
+            { -5,  0,  0,  0,  0,  0,  0, -5},
+            { -5,  0,  0,  0,  0,  0,  0, -5},
+            { -5,  0,  0,  0,  0,  0,  0, -5},
+            { -5,  0,  0,  0,  0,  0,  0, -5},
+            { -5,  0,  0,  0,  0,  0,  0, -5},
+            {  0,  0,  0,  5,  5,  0,  0,  0}
+    };
+
+    private static final int[][] queenSquareTable = {
+            {-20,-10,-10, -5, -5,-10,-10,-20},
+            {-10,  0,  0,  0,  0,  0,  0,-10},
+            {-10,  0,  5,  5,  5,  5,  0,-10},
+            { -5,  0,  5,  5,  5,  5,  0, -5},
+            {  0,  0,  5,  5,  5,  5,  0, -5},
+            {-10,  5,  5,  5,  5,  5,  0,-10},
+            {-10,  0,  5,  0,  0,  0,  0,-10},
+            {-20,-10,-10, -5, -5,-10,-10,-20}
+    };
+
+    private static final int[][] kingSquareTable = {
+            {-30,-40,-40,-50,-50,-40,-40,-30},
+            {-30,-40,-40,-50,-50,-40,-40,-30},
+            {-30,-40,-40,-50,-50,-40,-40,-30},
+            {-30,-40,-40,-50,-50,-40,-40,-30},
+            {-20,-30,-30,-40,-40,-30,-30,-20},
+            {-10,-20,-20,-20,-20,-20,-20,-10},
+            { 20, 20,  0,  0,  0,  0, 20, 20},
+            { 20, 30, 10,  0,  0, 10, 30, 20}
+    };
+
     private Match match;
 
     public Engine(Match match){
@@ -37,11 +103,41 @@ public class Engine {
      */
     private int countBoard(Color color){
         int sum = 0;
-        sum += Board.getInstance().getPawns().get(color).stream().filter((Piece::isInGame)).toList().size() * pawnValue;
-        sum += Board.getInstance().getKnights().get(color).stream().filter((Piece::isInGame)).toList().size() * knightValue;
-        sum += Board.getInstance().getBishops().get(color).stream().filter((Piece::isInGame)).toList().size() * bishopValue;
-        sum += Board.getInstance().getRooks().get(color).stream().filter((Piece::isInGame)).toList().size() * rookValue;
-        sum += Board.getInstance().getQueens().get(color).stream().filter((Piece::isInGame)).toList().size() * queenValue;
+        var king =Board.getInstance().getKings().get(color);
+        sum += knightValue + (color == Color.WHITE ? kingSquareTable[king.getPoint().getX()][king.getPoint().getY()] :
+                    kingSquareTable[7 - king.getPoint().getX()][king.getPoint().getY()]);
+
+        for (var table : Board.getInstance().getPieces()) {
+            var pieces = table.get(color);
+            for (Piece piece: pieces) {
+                if (!piece.isInGame())
+                    continue;
+                switch (piece.getType()){
+                    case QUEEN:
+                        sum += queenValue + (color == Color.WHITE ? queenSquareTable[piece.getPoint().getX()][piece.getPoint().getY()] :
+                                queenSquareTable[7 - piece.getPoint().getX()][piece.getPoint().getY()]);
+                        break;
+                    case KNIGHT:
+                        sum += knightValue + (color == Color.WHITE ? knightSquareTable[piece.getPoint().getX()][piece.getPoint().getY()] :
+                                knightSquareTable[7 - piece.getPoint().getX()][piece.getPoint().getY()]);
+                        break;
+
+                    case BISHOP:
+                        sum += bishopValue + (color == Color.WHITE ? bishopSquareTable[piece.getPoint().getX()][piece.getPoint().getY()] :
+                                bishopSquareTable[7 - piece.getPoint().getX()][piece.getPoint().getY()]);
+                        break;
+
+                    case PAWN:
+                        sum += pawnValue + (color == Color.WHITE ? pawnSquareTable[piece.getPoint().getX()][piece.getPoint().getY()] :
+                                pawnSquareTable[7 - piece.getPoint().getX()][piece.getPoint().getY()]);
+                        break;
+                    case ROOK:
+                        sum += rookValue + (color == Color.WHITE ? rookSquareTable[piece.getPoint().getX()][piece.getPoint().getY()] :
+                                rookSquareTable[7 - piece.getPoint().getX()][piece.getPoint().getY()]);
+                        break;
+                }
+            }
+        }
 
         return sum;
     }
@@ -53,7 +149,7 @@ public class Engine {
      * @return Minimax result containing the best move possible
      */
     private MiniMaxResult miniMax(int depth, boolean maximizingPlayer){
-        if(depth == 0){
+        if(depth == 0 || this.match.isCheckMate()){
             return new MiniMaxResult(null, evaluate());
         }
 
@@ -93,7 +189,7 @@ public class Engine {
     }
 
     public Move generateBestMove(int depth){
-        var result = this.miniMax(2, true);
+        var result = this.miniMax(4, true);
         return result.getMove();
     }
 
@@ -120,10 +216,21 @@ public class Engine {
      */
     private List<Move> getAllPossibleMoves(Color color){
         List<Move> moves = new ArrayList<>();
+        var king = Board.getInstance().getKings().get(color);
+        var kingCell = Board.getInstance().getCell(king.getPoint());
+        var kingsMoves = king.possibleMoves(kingCell);
+        for (var cell:kingsMoves) {
+            var move = new Move(kingCell, cell);
+            if(this.match.validateMove(move) == InvalidMoveReason.VALID){
+                moves.add(move);
+            }
+        }
         for (var table : Board.getInstance().getPieces()) {
             var pieces = table.get(color);
             for (Piece piece: pieces) {
                 var pieceCell = Board.getInstance().getCell(piece.getPoint());
+                if(pieceCell.isEmpty() || !piece.isInGame())
+                    continue;
                 var possibleMoves = piece.possibleMoves(pieceCell);
                 for (var cell: possibleMoves) {
                     var move = new Move(pieceCell, cell);
