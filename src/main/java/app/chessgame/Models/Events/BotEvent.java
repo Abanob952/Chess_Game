@@ -5,6 +5,9 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Event to be triggered when the human player has finished his turn
+ */
 public class BotEvent {
     private List<BotEventListener> listeners = new ArrayList<>();
 
