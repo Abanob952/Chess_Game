@@ -96,7 +96,7 @@ public class MoveValidator {
         for (HashMap<Color, List<Piece>> table : Board.getInstance().getPieces()) {
             var pieces = table.get(enemyColor);
             for (Piece piece : pieces) {
-                if (piece.getPoint() == null)
+                if (piece.getPoint() == null || !piece.isInGame())
                     continue;
                 var moves = piece.possibleMoves(Board.getInstance().getCell(piece.getPoint()));
                 for (Cell cell : moves) {
@@ -123,7 +123,7 @@ public class MoveValidator {
             var pieces = table.get(color);
 
             for (Piece piece : pieces) {
-                if (piece.getPoint() == null)
+                if (piece.getPoint() == null || !piece.isInGame())
                     continue;
                 var cellPiece = Board.getInstance().getCell(piece.getPoint());
                 var possibleMoves = piece.possibleMoves(cellPiece);
