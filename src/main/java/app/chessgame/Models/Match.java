@@ -78,4 +78,8 @@ public class Match {
     public void subscribeToCheckMateEvent(CheckMateEventListener listener){
         this.checkMateEvent.addEventListener(listener);
     }
+
+    public InvalidMoveReason validateMove(Move move){
+        return this.validator.validateMove(move.getSource(), move.getTarget());
+    }
 }
