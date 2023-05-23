@@ -89,7 +89,4 @@ public class PawnStrategy implements MoveStrategy{
         moves.put(color, possibleMoves);
         return moves;
     }
-
-
-
 }
