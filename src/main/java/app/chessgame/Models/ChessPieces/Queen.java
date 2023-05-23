@@ -28,4 +28,9 @@ public class Queen extends Piece {
             return "Q";
         return "Q";
     }
+
+    @Override
+    public PieceEnum getType() {
+        return PieceEnum.QUEEN;
+    }
 }

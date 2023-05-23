@@ -1,5 +1,7 @@
 package app.chessgame.Controller;
 
+import app.chessgame.Models.ChessPieces.Piece;
+import app.chessgame.Models.Events.*;
 import app.chessgame.HelloApplication;
 import app.chessgame.Models.*;
 import app.chessgame.Models.ChessPieces.*;
@@ -10,6 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,7 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-public class BoardController implements TurnChangeListener, CheckListener {
+public class BoardController implements MoveMadeEventListener, TurnChangeListener, CheckEventListener, CheckMateEventListener {
     private final Match match = new Match();
 
     private CellsObserver observer = new CellsObserver();
@@ -38,6 +41,7 @@ public class BoardController implements TurnChangeListener, CheckListener {
     @FXML
     private Label player2CheckLabel;
 
+    private BotEvent botEvent = new BotEvent();
     @FXML
     private HBox promote;
 
@@ -59,28 +63,6 @@ public class BoardController implements TurnChangeListener, CheckListener {
                 var button = this.createButton(cell);
                 chessBoard.getChildren().add(button);
                 GridPane.setConstraints(button, j, i, 1, 1);
-
-                if (i == rows - 1 && j == 0) {
-                    VBox labelContainer = new VBox();
-                    labelContainer.setAlignment(Pos.CENTER_LEFT);
-                    labelContainer.getStyleClass().add("coordinate-label");
-                    Label rowLabel = new Label(Integer.toString(rows - i));
-                    Label columnLabel = new Label("a");
-                    labelContainer.getChildren().addAll(rowLabel, columnLabel);
-                    GridPane.setConstraints(labelContainer, j, i);
-                    chessBoard.getChildren().add(labelContainer);
-                } else if (i == rows - 1 && j > 0) {
-                    char columnChar = (char) ('b' + (j - 1));
-                    Label columnLabel = new Label(Character.toString(columnChar));
-                    GridPane.setConstraints(columnLabel, j, i);
-                    chessBoard.getChildren().add(columnLabel);
-                } else if (j == 0 && i < rows - 1) {
-                    int rowNumber = rows - i;
-                    Label rowLabel = new Label(Integer.toString(rowNumber));
-                    rowLabel.getStyleClass().add("coordinate-label");
-                    GridPane.setConstraints(rowLabel, j, i);
-                    chessBoard.getChildren().add(rowLabel);
-                }
             }
         }
 
@@ -93,6 +75,9 @@ public class BoardController implements TurnChangeListener, CheckListener {
 
         this.match.subscribeToTurnChangedEvent(this);
         this.match.subscribeToCheckEvent(this);
+        this.match.subscribeToCheckMateEvent(this);
+        this.match.subscribeToMoveMadeEvent(this);
+        this.botEvent.addEventListener(this.match);
         this.match.startMatch();
     }
 
@@ -133,10 +118,7 @@ public class BoardController implements TurnChangeListener, CheckListener {
                 var selectedCell = (Cell)this.isSelected.getUserData();
                 if(!this.match.play(selectedCell, cell))
                     return;
-
-                this.move(this.isSelected, cell.getPiece(), button);
-
-                uncheckCell(button);
+                this.botEvent.raiseEvent();
             }
             else{
                 checkCell(button);
@@ -231,6 +213,41 @@ public class BoardController implements TurnChangeListener, CheckListener {
         this.showCheckLabel(color);
     }
 
+    @Override
+    public void CheckMate() {
+        var color = this.match.getTurn().getColor();
+        if (color == Color.BLACK){
+            this.player1CheckLabel.setText("Check Mate");
+            this.player1CheckLabel.setVisible(true);
+        }
+        else{
+            this.player2CheckLabel.setText("Check Mate");
+            this.player2CheckLabel.setVisible(true);
+        }
+    }
+
+    private Button getButton(Point p){
+        for (Node node : this.chessBoard.getChildren()) {
+            Integer rowIndex = GridPane.getRowIndex(node);
+            Integer columnIndex = GridPane.getColumnIndex(node);
+
+            if (rowIndex != null && columnIndex != null && rowIndex == p.getX() && columnIndex == p.getY()) {
+                return (Button) node;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void moveMade(Move move) {
+        var selectedButton = this.isSelected != null && move.getSource().getPiece() == ((Cell)this.isSelected.getUserData()).getPiece()
+        ? this.isSelected: this.getButton(move.getSource().getPoint());
+        var targetButton = this.getButton(move.getTarget().getPoint());
+        this.move(selectedButton, move.getTarget().getPiece(), targetButton);
+
+           uncheckCell(targetButton);
+    }
 
     @FXML
     public void promotPrint(){

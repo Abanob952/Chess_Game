@@ -75,7 +75,9 @@ public class Board {
              for (int j = 0; j < cols; j++) {
                  if(i == 1 || i == 6){
                      Color color = i ==1?Color.BLACK:Color.WHITE;
-                     cells[i][j].setPiece(factory.createPiece(PieceEnum.PAWN, color, new Point(i,j)));
+                     var piece = factory.createPiece(PieceEnum.PAWN, color, new Point(i,j));
+                     cells[i][j].setPiece(piece);
+                    this.pawns.get(color).add(piece);
                  } else if ((i == 0 || i == 7) ) {
                      Color color = i ==0?Color.BLACK:Color.WHITE;
                      switch (j) {
