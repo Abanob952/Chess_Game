@@ -1,12 +1,10 @@
 package app.chessgame.Controller;
 
-import app.chessgame.Models.Board;
-import app.chessgame.Models.CellsObserver;
-import app.chessgame.Models.Cell;
-import app.chessgame.Models.ChessPieces.Piece;
+import app.chessgame.HelloApplication;
+import app.chessgame.Models.*;
+import app.chessgame.Models.ChessPieces.*;
 import app.chessgame.Models.Events.CheckListener;
 import app.chessgame.Models.Events.TurnChangeListener;
-import app.chessgame.Models.Match;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -39,8 +38,13 @@ public class BoardController implements TurnChangeListener, CheckListener {
     @FXML
     private Label player2CheckLabel;
 
+    @FXML
+    private HBox promote;
+
     private static final int rows = 8;
     private static final int columns = 8;
+    private static Point promotePawn;
+    private Color promotColor;
 
     @FXML
     public void initialize() {
@@ -179,6 +183,15 @@ public class BoardController implements TurnChangeListener, CheckListener {
     private void move(Button sourceButton, Piece piece, Button button){
         sourceButton.setGraphic(null);
         button.setGraphic(new ImageView(piece.getImage()));
+
+        if(piece instanceof Pawn){
+            Pawn pawn = (Pawn) piece;
+            if (pawn.getPoint().getX() == (pawn.getColor() == Color.WHITE ? 0 : 7)){
+                promotePawn = pawn.getPoint();
+                promotColor = pawn.getColor();
+                promotPrint();
+            }
+        }
     }
 
     private void switchLabelsColor(){
@@ -216,5 +229,56 @@ public class BoardController implements TurnChangeListener, CheckListener {
     @Override
     public void check(Color color) {
         this.showCheckLabel(color);
+    }
+
+
+    @FXML
+    public void promotPrint(){
+        promote.setVisible(true);
+        promote.setManaged(true);
+    }
+
+    @FXML
+    public void onDameButtonClick() {
+        String path = promotColor == Color.BLACK?"/Images/black-queen.png":"/Images/white-queen.png";
+        Image queenImage = new Image(HelloApplication.class.getResourceAsStream(path));
+        Board.getInstance().getCell(promotePawn).setPiece(null);
+        Piece dame = new Queen(new QueenStrategy(promotColor), promotColor, queenImage, promotePawn);
+        Board.getInstance().getCell(promotePawn).setPiece(dame);
+        promote.setVisible(false);
+        promote.setManaged(false);
+    }
+
+    @FXML
+    public void onTourButtonClick() {
+        String path = promotColor == Color.BLACK?"/Images/black-rook.png":"/Images/white-rook.png";
+        Image rookImage = new Image(HelloApplication.class.getResourceAsStream(path));
+        Board.getInstance().getCell(promotePawn).setPiece(null);
+        Piece tour = new Rook(new RookStrategy(promotColor), promotColor, rookImage, promotePawn);
+        Board.getInstance().getCell(promotePawn).setPiece(tour);
+        promote.setVisible(false);
+        promote.setManaged(false);
+    }
+
+    @FXML
+    public void onOfficierButtonClick() {
+        String path = promotColor == Color.BLACK?"/Images/black-bishop.png":"/Images/white-bishop.png";
+        Image bishopImage = new Image(HelloApplication.class.getResourceAsStream(path));
+        Board.getInstance().getCell(promotePawn).setPiece(null);
+        Piece officier = new Bishop(new BishopStrategy(promotColor), promotColor, bishopImage, promotePawn);
+        Board.getInstance().getCell(promotePawn).setPiece(officier);
+        promote.setVisible(false);
+        promote.setManaged(false);
+    }
+
+    @FXML
+    public void onCavalierButtonClick() {
+        String path = promotColor == Color.BLACK?"/Images/black-knight.png":"/Images/white-knight.png";
+        Image knightImage = new Image(HelloApplication.class.getResourceAsStream(path));
+        Board.getInstance().getCell(promotePawn).setPiece(null);
+        Piece cavalier = new Knight(new KnightStrategy(promotColor), promotColor, knightImage, promotePawn);
+        Board.getInstance().getCell(promotePawn).setPiece(cavalier);
+        promote.setVisible(false);
+        promote.setManaged(false);
     }
 }
