@@ -15,6 +15,7 @@ public class Engine {
     private static final int bishopValue = 300;
     private static final int rookValue = 500;
     private static final int queenValue = 900;
+    private  static final int kingValue = 2000;
     private static final int[][] pawnSquareTable = {
             { 0,  0,  0,  0,  0,  0,  0,  0},
             {50, 50, 50, 50, 50, 50, 50, 50},
@@ -104,8 +105,8 @@ public class Engine {
     private int countBoard(Color color){
         int sum = 0;
         var king =Board.getInstance().getKings().get(color);
-        sum += knightValue + (color == Color.WHITE ? kingSquareTable[king.getPoint().getX()][king.getPoint().getY()] :
-                    kingSquareTable[7 - king.getPoint().getX()][king.getPoint().getY()]);
+        sum += kingValue + (color == Color.WHITE ? kingSquareTable[king.getPoint().getX()][king.getPoint().getY()] :
+                kingSquareTable[7 - king.getPoint().getX()][king.getPoint().getY()]);
 
         for (var table : Board.getInstance().getPieces()) {
             var pieces = table.get(color);
@@ -148,7 +149,7 @@ public class Engine {
      * @param maximizingPlayer true for the maximizing player and false otherwise
      * @return Minimax result containing the best move possible
      */
-    private MiniMaxResult miniMax(int depth, boolean maximizingPlayer){
+    private MiniMaxResult miniMax(int depth, boolean maximizingPlayer, int alpha, int beta){
         if(depth == 0 || this.match.isCheckMate()){
             return new MiniMaxResult(null, evaluate());
         }
@@ -160,12 +161,15 @@ public class Engine {
             MiniMaxResult bestMove = null;
             for (Move move: moves) {
                 var piece = this.makeMove(move);
-                var result = miniMax(depth - 1, false);
+                var result = miniMax(depth - 1, false, alpha, beta);
+                alpha = Math.max(alpha, result.getEvaluation());
                 if(result.getEvaluation()  > bestEval){
                     bestEval = result.getEvaluation();
                     bestMove = new MiniMaxResult(move, bestEval);
                 }
                 this.undoMove(move, piece);
+                if(beta <= alpha)
+                    break;
             }
 
             return bestMove;
@@ -176,12 +180,15 @@ public class Engine {
 
             for (Move move: moves) {
                 var piece = this.makeMove(move);
-                var result = miniMax(depth - 1, true);
+                var result = miniMax(depth - 1, true, alpha, beta);
+                beta = Math.min(beta, result.getEvaluation());
                 if(result.getEvaluation()  < bestEval){
                     bestEval = result.getEvaluation();
                     bestMove = new MiniMaxResult(move, bestEval);
                 }
                 this.undoMove(move, piece);
+                if(beta<=alpha)
+                    break;
             }
 
             return bestMove;
@@ -189,7 +196,7 @@ public class Engine {
     }
 
     public Move generateBestMove(int depth){
-        var result = this.miniMax(4, true);
+        var result = this.miniMax(3, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
         return result.getMove();
     }
 
