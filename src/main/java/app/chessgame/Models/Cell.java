@@ -1,6 +1,8 @@
 package app.chessgame.Models;
+import app.chessgame.Models.ChessPieces.King;
 import app.chessgame.Models.ChessPieces.Pawn;
 import app.chessgame.Models.ChessPieces.Piece;
+import app.chessgame.Models.ChessPieces.Rook;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.image.ImageView;
@@ -64,8 +66,6 @@ public class Cell {
     public void move(Cell cell){
         cell.setPiece(this.piece);
         this.piece.setPoint(cell.getPoint());
-        if(this.piece instanceof Pawn)
-            ((Pawn)this.piece).moved();
         this.piece = null;
     }
 
