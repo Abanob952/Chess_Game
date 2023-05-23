@@ -219,7 +219,8 @@ public class BoardController implements MoveMadeEventListener, TurnChangeListene
 
     @Override
     public void moveMade(Move move) {
-        var selectedButton = this.isSelected != null ? this.isSelected: this.getButton(move.getSource().getPoint());
+        var selectedButton = this.isSelected != null && move.getSource().getPiece() == ((Cell)this.isSelected.getUserData()).getPiece()
+        ? this.isSelected: this.getButton(move.getSource().getPoint());
         var targetButton = this.getButton(move.getTarget().getPoint());
         this.move(selectedButton, move.getTarget().getPiece(), targetButton);
 
