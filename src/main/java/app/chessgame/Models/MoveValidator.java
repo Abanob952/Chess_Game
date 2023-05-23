@@ -93,6 +93,12 @@ public class MoveValidator {
     public boolean kingInCheck(Color color) {
         var king = Board.getInstance().getKings().get(color);
         Color enemyColor = this.alternateColor(color);
+        var enemyKing = Board.getInstance().getKings().get(enemyColor);
+        var positions = enemyKing.possibleMoves(Board.getInstance().getCell(enemyKing.getPoint()));
+        for (var move : positions){
+            if(move.getPiece()!=null && move.getPiece().equals(king))
+                return true;
+        }
         for (HashMap<Color, List<Piece>> table : Board.getInstance().getPieces()) {
             var pieces = table.get(enemyColor);
             for (Piece piece : pieces) {
