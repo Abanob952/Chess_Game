@@ -1,5 +1,9 @@
 package app.chessgame.Models.Events;
 
+import app.chessgame.Models.ChessPieces.King;
+import app.chessgame.Models.ChessPieces.Pawn;
+import app.chessgame.Models.ChessPieces.Piece;
+import app.chessgame.Models.ChessPieces.Rook;
 import app.chessgame.Models.Move;
 
 import java.util.ArrayList;
@@ -21,6 +25,13 @@ public class MoveMadeEvent {
 
     public void raiseEvent(Move move) {
         for (MoveMadeEventListener listener : listeners) {
+            Piece piece = move.getTarget().getPiece();
+            if(piece instanceof Pawn pawn)
+                pawn.moved();
+            if(piece instanceof King king)
+                king.moved();
+            if(piece instanceof Rook rook)
+                rook.moved();
             listener.moveMade(move);
         }
     }

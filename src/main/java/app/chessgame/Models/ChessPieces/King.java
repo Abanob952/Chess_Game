@@ -14,12 +14,14 @@ public class King extends Piece {
         super(strategy);
     }
 
+    private boolean hasMoved;
     public King(MoveStrategy strategy, Color color, Image image) {
         super(strategy, color, image);
     }
 
     public King(MoveStrategy strategy, Color color, Image image, Point point) {
         super(strategy, color, image, point);
+        this.hasMoved = false;
     }
 
     @Override
@@ -32,5 +34,13 @@ public class King extends Piece {
     @Override
     public PieceEnum getType() {
         return PieceEnum.KING;
+    }
+
+    public boolean hasMoved(){
+        return this.hasMoved;
+    }
+
+    public void moved() {
+        this.hasMoved = true;
     }
 }
