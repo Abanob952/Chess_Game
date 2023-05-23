@@ -13,7 +13,7 @@ public class HelloApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader();
         var res = HelloApplication.class.getResource("/Board.fxml");
         fxmlLoader.setLocation(res);
-        Scene scene = new Scene(fxmlLoader.load(), 800, 800);
+        Scene scene = new Scene(fxmlLoader.load(), 1024, 768);
         scene.getStylesheets().add(getClass().getResource("/Css/board.css").toExternalForm());
         stage.setTitle("Chess");
         stage.setScene(scene);

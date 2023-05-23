@@ -13,7 +13,7 @@ public class PieceFactory {
      * @return a piece corresponding the enum and the color passed
      * @throws if enum passed does not correspond to any piece
      */
-    public Piece createPiece(PieceEnum piece, Color color, Point point) {
+    public static Piece createPiece(PieceEnum piece, Color color, Point point) {
         PieceDefinition definition = new PieceDefinition(piece, color);
         Image image = ImageViewFactoy.getImageForPiece(definition);
         switch (piece){
