@@ -105,4 +105,8 @@ public class Cell {
         this.isHighlited = true;
         this.getColorObservable().setValue(this.getColor().toString().replace("0x", "#"));
     }
+
+    public void setColorObservable(Color color){
+        this.getColorObservable().setValue(color.toString().replace("0x", "#"));
+    }
 }

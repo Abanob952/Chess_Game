@@ -13,3 +13,11 @@
 .highlight{
     -fx-background-color: lightblue;
 }
+
+.check{
+    -fx-background-color: red;
+}
+
+.last{
+    -fx-background-color: orange;
+}

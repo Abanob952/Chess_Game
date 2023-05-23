@@ -1,31 +1,34 @@
 package app.chessgame.Controller;
 
+import app.chessgame.Models.Cell;
 import app.chessgame.Models.ChessPieces.Piece;
 import app.chessgame.Models.Events.*;
 import app.chessgame.HelloApplication;
 import app.chessgame.Models.*;
 import app.chessgame.Models.ChessPieces.*;
-import app.chessgame.Models.Events.CheckListener;
 import app.chessgame.Models.Events.TurnChangeListener;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 public class BoardController implements MoveMadeEventListener, TurnChangeListener, CheckEventListener, CheckMateEventListener {
     private final Match match = new Match();
+    @FXML
+    public ComboBox<String> playerChoice;
 
-    private CellsObserver observer = new CellsObserver();
+    private final CellsObserver observer = new CellsObserver();
+    @FXML
+    public Button startMatch;
     private Button isSelected;
-    private Cell lastPlayed;
+    private Button lastPlayed;
     @FXML
     private GridPane chessBoard;
 
@@ -41,14 +44,10 @@ public class BoardController implements MoveMadeEventListener, TurnChangeListene
     @FXML
     private Label player2CheckLabel;
 
-    private BotEvent botEvent = new BotEvent();
-    @FXML
-    private HBox promote;
+    private final BotEvent botEvent = new BotEvent();
 
     private static final int rows = 8;
     private static final int columns = 8;
-    private static Point promotePawn;
-    private Color promotColor;
 
     @FXML
     public void initialize() {
@@ -68,7 +67,6 @@ public class BoardController implements MoveMadeEventListener, TurnChangeListene
 
         player2Label.getStyleClass().add("highlight");
         player1Label.getStyleClass().remove("highlight");
-        player1Label.setText(this.match.getPlayer1().getName());
         player2Label.setText(this.match.getPlayer2().getName());
         this.player1CheckLabel.setVisible(false);
         this.player2CheckLabel.setVisible(false);
@@ -78,7 +76,32 @@ public class BoardController implements MoveMadeEventListener, TurnChangeListene
         this.match.subscribeToCheckMateEvent(this);
         this.match.subscribeToMoveMadeEvent(this);
         this.botEvent.addEventListener(this.match);
-        this.match.startMatch();
+
+        // Set the items to display in the ComboBox
+        playerChoice.setItems(FXCollections.observableArrayList(
+                "Bot",
+                "Human player"));
+
+        playerChoice.setValue("Bot");
+        this.match.setPlayer1(new BotPlayer(Color.BLACK, this.match));
+        playerChoice.setOnAction(event -> {
+            String selectedOption = playerChoice.getValue();
+            if(selectedOption.equals("Bot")){
+                this.match.setPlayer1(new BotPlayer(Color.BLACK, this.match));
+            }
+            else{
+                this.match.setPlayer1(new Player("Player1", Color.BLACK));
+            }
+
+            player1Label.setText(this.match.getPlayer1().getName());
+        });
+
+        this.startMatch.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                match.startMatch();
+            }
+        });
     }
 
 
@@ -163,17 +186,42 @@ public class BoardController implements MoveMadeEventListener, TurnChangeListene
     }
 
     private void move(Button sourceButton, Piece piece, Button button){
-        sourceButton.setGraphic(null);
-        button.setGraphic(new ImageView(piece.getImage()));
-
-        if(piece instanceof Pawn){
-            Pawn pawn = (Pawn) piece;
+        if(piece instanceof Pawn pawn && !this.match.getTurn().getName().equals("Bot")){
             if (pawn.getPoint().getX() == (pawn.getColor() == Color.WHITE ? 0 : 7)){
-                promotePawn = pawn.getPoint();
-                promotColor = pawn.getColor();
-                promotPrint();
+                var promoted = this.promptUserForPiece(piece);
+                if(promoted != null){
+                    sourceButton.setGraphic(null);
+                    button.setGraphic(new ImageView(promoted.getImage()));
+                    return;
+                }
             }
         }
+
+        sourceButton.setGraphic(null);
+        button.setGraphic(new ImageView(piece.getImage()));
+    }
+
+    private void highlightLastPlayed(){
+        if(this.lastPlayed!= null && this.lastPlayed.getUserData() instanceof Cell cell){
+            cell.setColorObservable(Color.ORANGE);
+        }
+    }
+
+    private void unhighlightLastPlayed(){
+        if(this.lastPlayed!= null && this.lastPlayed.getUserData() instanceof Cell cell){
+            cell.setColorObservable(cell.getColor());
+        }
+    }
+    private void highlightInCheck(Color color){
+        var cell = Board.getInstance().getCell(Board.getInstance().getKings().get(color).getPoint());
+        if(cell != null)
+            cell.setColorObservable(Color.RED);
+    }
+
+    private void unhighlightInCheck(Color color){
+        var cell = Board.getInstance().getCell(Board.getInstance().getKings().get(color).getPoint());
+        if(cell != null)
+            cell.setColorObservable(cell.getColor());
     }
 
     private void switchLabelsColor(){
@@ -206,11 +254,14 @@ public class BoardController implements MoveMadeEventListener, TurnChangeListene
     public void turnChanged() {
         this.switchLabelsColor();
         this.hideCheckLabel();
+        this.unhighlightInCheck(this.match.getTurn().getColor() == Color.WHITE? Color.BLACK: Color.WHITE);
     }
+
 
     @Override
     public void check(Color color) {
         this.showCheckLabel(color);
+        this.highlightInCheck(color);
     }
 
     @Override
@@ -246,56 +297,58 @@ public class BoardController implements MoveMadeEventListener, TurnChangeListene
         var targetButton = this.getButton(move.getTarget().getPoint());
         this.move(selectedButton, move.getTarget().getPiece(), targetButton);
 
-           uncheckCell(targetButton);
+        uncheckCell(targetButton);
+        this.unhighlightLastPlayed();
+        this.lastPlayed = targetButton;
+        this.highlightLastPlayed();
     }
 
-    @FXML
-    public void promotPrint(){
-        promote.setVisible(true);
-        promote.setManaged(true);
+    public Piece promptUserForPiece(Piece piece){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Pieces Dialog");
+        alert.setHeaderText("Choose a Piece");
+        alert.setContentText("Please select one of the following options:");
+
+        ButtonType queenButton = new ButtonType(PieceEnum.QUEEN.toString());
+        ButtonType bishopButton = new ButtonType(PieceEnum.BISHOP.toString());
+        ButtonType rookButton = new ButtonType(PieceEnum.ROOK.toString());
+        ButtonType knightButton = new ButtonType(PieceEnum.KNIGHT.toString());
+
+        VBox queenImage = this.createPromotionImageView(PieceEnum.QUEEN);
+        VBox bishopImage = this.createPromotionImageView(PieceEnum.BISHOP);
+        VBox rookImage = this.createPromotionImageView(PieceEnum.ROOK);
+        VBox knightImage = this.createPromotionImageView(PieceEnum.KNIGHT);
+
+        alert.getButtonTypes().setAll(queenButton, bishopButton, rookButton, knightButton);
+        alert.getDialogPane().setContent(new HBox(10, queenImage, bishopImage, rookImage, knightImage));
+
+        ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
+
+        Piece promotion = null;
+        if (result == queenButton) {
+            promotion = PieceFactory.createPiece(PieceEnum.QUEEN, piece.getColor(), piece.getPoint());
+            Board.getInstance().getQueens().get(piece.getColor()).add(promotion);
+        } else if (result == bishopButton) {
+            promotion = PieceFactory.createPiece(PieceEnum.BISHOP, piece.getColor(), piece.getPoint());
+            Board.getInstance().getBishops().get(piece.getColor()).add(promotion);
+        } else if (result == rookButton) {
+            promotion = PieceFactory.createPiece(PieceEnum.ROOK, piece.getColor(), piece.getPoint());
+            Board.getInstance().getRooks().get(piece.getColor()).add(promotion);
+        } else if (result == knightButton) {
+            promotion = PieceFactory.createPiece(PieceEnum.KNIGHT, piece.getColor(), piece.getPoint());
+            Board.getInstance().getKnights().get(piece.getColor()).add(promotion);
+        }
+
+        if (promotion != null){
+            Board.getInstance().getCell(piece.getPoint()).setPiece(promotion);
+        }
+        return promotion;
     }
 
-    @FXML
-    public void onDameButtonClick() {
-        String path = promotColor == Color.BLACK?"/Images/black-queen.png":"/Images/white-queen.png";
-        Image queenImage = new Image(HelloApplication.class.getResourceAsStream(path));
-        Board.getInstance().getCell(promotePawn).setPiece(null);
-        Piece dame = new Queen(new QueenStrategy(promotColor), promotColor, queenImage, promotePawn);
-        Board.getInstance().getCell(promotePawn).setPiece(dame);
-        promote.setVisible(false);
-        promote.setManaged(false);
-    }
-
-    @FXML
-    public void onTourButtonClick() {
-        String path = promotColor == Color.BLACK?"/Images/black-rook.png":"/Images/white-rook.png";
-        Image rookImage = new Image(HelloApplication.class.getResourceAsStream(path));
-        Board.getInstance().getCell(promotePawn).setPiece(null);
-        Piece tour = new Rook(new RookStrategy(promotColor), promotColor, rookImage, promotePawn);
-        Board.getInstance().getCell(promotePawn).setPiece(tour);
-        promote.setVisible(false);
-        promote.setManaged(false);
-    }
-
-    @FXML
-    public void onOfficierButtonClick() {
-        String path = promotColor == Color.BLACK?"/Images/black-bishop.png":"/Images/white-bishop.png";
-        Image bishopImage = new Image(HelloApplication.class.getResourceAsStream(path));
-        Board.getInstance().getCell(promotePawn).setPiece(null);
-        Piece officier = new Bishop(new BishopStrategy(promotColor), promotColor, bishopImage, promotePawn);
-        Board.getInstance().getCell(promotePawn).setPiece(officier);
-        promote.setVisible(false);
-        promote.setManaged(false);
-    }
-
-    @FXML
-    public void onCavalierButtonClick() {
-        String path = promotColor == Color.BLACK?"/Images/black-knight.png":"/Images/white-knight.png";
-        Image knightImage = new Image(HelloApplication.class.getResourceAsStream(path));
-        Board.getInstance().getCell(promotePawn).setPiece(null);
-        Piece cavalier = new Knight(new KnightStrategy(promotColor), promotColor, knightImage, promotePawn);
-        Board.getInstance().getCell(promotePawn).setPiece(cavalier);
-        promote.setVisible(false);
-        promote.setManaged(false);
+    private VBox createPromotionImageView(PieceEnum piece) {
+        Image image = ImageViewFactoy.getImageForPiece(new PieceDefinition(piece, this.match.getTurn().getColor()));
+        ImageView imageView = new ImageView(image);
+        Label label = new Label(piece.toString());
+        return new VBox(10, imageView, label);
     }
 }

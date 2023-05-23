@@ -24,9 +24,15 @@ public class Match implements BotEventListener {
         this.checkEvent = new CheckEvent();
         this.checkMateEvent = new CheckMateEvent();
         this.moveMadeEvent = new MoveMadeEvent();
-        this.player1 = new BotPlayer(Color.BLACK, this);
+        //this.player1 = new BotPlayer(Color.BLACK, this);
         this.player2 = new Player("player2", Color.WHITE);
         this.turn = player2;
+    }
+
+    public void setPlayer1(Player player){
+        if(started)
+            return;
+        this.player1 = player;
     }
 
     public Player getPlayer1() {

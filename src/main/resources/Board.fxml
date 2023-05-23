@@ -27,12 +27,13 @@
                 <Label fx:id="player2CheckLabel" style="-fx-text-fill: red;" text="Check" />
                 <Label fx:id="player2Label" text="Label" />
             </children></VBox>
-        <HBox fx:id="promote" alignment="CENTER" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowSpan="3" visible="false" managed="false">
+        <HBox alignment="CENTER" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+
             <children>
-                <Button fx:id="dameButton" text="Dame" onAction="#onDameButtonClick" />
-                <Button fx:id="tourButton" text="Tour" onAction="#onTourButtonClick" />
-                <Button fx:id="fouButton" text="Fou" onAction="#onOfficierButtonClick" />
-                <Button fx:id="cavalierButton" text="Cavalier" onAction="#onCavalierButtonClick" />
+
+                <ComboBox fx:id="playerChoice" prefWidth="150.0" />
+                <Button fx:id="startMatch" text="Start Match" />
+
             </children>
         </HBox>
     </children>
