@@ -17,12 +17,28 @@ public class Rook extends Piece {
 
     public Rook(MoveStrategy strategy, Color color, Image image, Point point) {
         super(strategy, color, image, point);
+        this.hasMoved = false;
     }
+
+    private boolean hasMoved;
 
     @Override
     public String toString() {
         if(this.getColor() == Color.WHITE)
             return "R";
         return "R";
+    }
+
+    @Override
+    public PieceEnum getType() {
+        return PieceEnum.ROOK;
+    }
+
+    public boolean hasMoved(){
+        return this.hasMoved;
+    }
+
+    public void moved() {
+        this.hasMoved = true;
     }
 }

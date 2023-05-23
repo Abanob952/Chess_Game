@@ -27,4 +27,9 @@ public class Knight extends Piece {
             return "N";
         return "N";
     }
+
+    @Override
+    public PieceEnum getType() {
+        return PieceEnum.KNIGHT;
+    }
 }

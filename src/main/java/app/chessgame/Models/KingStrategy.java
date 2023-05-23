@@ -1,5 +1,6 @@
 package app.chessgame.Models;
 
+import app.chessgame.Models.ChessPieces.King;
 import javafx.scene.paint.Color;
 
 import java.util.*;
@@ -20,6 +21,7 @@ public class KingStrategy implements MoveStrategy {
     public List<Cell> getPossibleMoves(Cell currentCell) {
         List<Cell> possibleMoves = new ArrayList<>();
         Map<Color, List<Point>> moves = this.calculateMoves(currentCell.getPoint());
+        this.addCastlingMoves(currentCell, moves);
         for (Point potentialPoint : moves.get(this.color)) {
             if (Utility.validPoint(potentialPoint)) {
                 Cell potentialCell = Board.getInstance().getCell(potentialPoint);
@@ -28,6 +30,9 @@ public class KingStrategy implements MoveStrategy {
                 }
             }
         }
+
+
+
         return possibleMoves;
     }
 
@@ -53,5 +58,15 @@ public class KingStrategy implements MoveStrategy {
                         )));
             }
         };
+    }
+
+    public void addCastlingMoves(Cell currentCell,Map<Color, List<Point>> moves){
+        if(!currentCell.isEmpty() && currentCell.getPiece() instanceof King king){
+            if (!king.hasMoved()){
+                var point = currentCell.getPoint();
+                moves.get(this.color).add(new Point(point.getX(), point.getY() - 2));
+                moves.get(this.color).add(new Point(point.getX(), point.getY() + 2));
+            }
+        }
     }
 }

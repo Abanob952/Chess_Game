@@ -29,7 +29,7 @@ public class Player {
         this.lostPieces.add(piece);
     }
 
-    public Point getPlay(){
-        return null;
+    public void getPlay(){
+
     }
 }
