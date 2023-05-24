@@ -64,8 +64,15 @@ public class KingStrategy implements MoveStrategy {
         if(!currentCell.isEmpty() && currentCell.getPiece() instanceof King king){
             if (!king.hasMoved()){
                 var point = currentCell.getPoint();
-                moves.get(this.color).add(new Point(point.getX(), point.getY() - 2));
-                moves.get(this.color).add(new Point(point.getX(), point.getY() + 2));
+                Point littleCastle = new Point(point.getX(), point.getY() + 1);
+                Point littleCastle2 = new Point(point.getX(), point.getY() + 2);
+                Point bigCastle = new Point(point.getX(), point.getY() - 1);
+                Point bigCastle2 = new Point(point.getX(), point.getY() - 2);
+                if(Board.getInstance().getCell(littleCastle).isEmpty() && Board.getInstance().getCell(littleCastle2).isEmpty()){
+                    moves.get(this.color).add(new Point(point.getX(), point.getY() + 2));
+                } else if (Board.getInstance().getCell(bigCastle).isEmpty() && Board.getInstance().getCell(bigCastle2).isEmpty()) {
+                    moves.get(this.color).add(new Point(point.getX(), point.getY() - 2));
+                }
             }
         }
     }
