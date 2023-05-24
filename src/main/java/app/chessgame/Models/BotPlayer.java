@@ -15,7 +15,9 @@ public class BotPlayer extends Player{
     @Override
     public void getPlay() {
         if(this.match.getTurn().getColor() == this.getColor()){
-            var res = this.engine.generateBestMove(2);
+            var res = this.engine.generateBestMove(3);
+            if(res == null)
+                return; // check mate
             this.match.play(res
                     .getSource(), res.getTarget());
 

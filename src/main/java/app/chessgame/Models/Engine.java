@@ -196,7 +196,7 @@ public class Engine {
     }
 
     public Move generateBestMove(int depth){
-        var result = this.miniMax(3, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        var result = this.miniMax(depth, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
         return result.getMove();
     }
 
