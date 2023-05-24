@@ -220,6 +220,10 @@ public class BoardController implements MoveMadeEventListener, TurnChangeListene
 
     private void unhighlightInCheck(Color color){
         var cell = Board.getInstance().getCell(Board.getInstance().getKings().get(color).getPoint());
+        if(lastPlayed != null && lastPlayed.getUserData() instanceof Cell lastPlayedCell){
+            lastPlayedCell.setColorObservable(lastPlayedCell.getColor());
+        }
+
         if(cell != null)
             cell.setColorObservable(cell.getColor());
     }
